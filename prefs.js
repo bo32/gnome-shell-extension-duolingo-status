@@ -6,6 +6,8 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 const Settings = Convenience.getSettings();
 
+let username_field;
+
 DuolingoStatusSettingsWidget.prototype = {
 
 	_init: function() {		
@@ -14,9 +16,9 @@ DuolingoStatusSettingsWidget.prototype = {
                                   column_spacing: 4 });
 
 		let username_label = new Gtk.Label({label: 'Username'});
-		this.username_field = new Gtk.Entry({hexpand: true});
+		username_field = new Gtk.Entry({hexpand: true});
 		this._grid.attach(username_label, 0, 0, 1, 1);
-		this._grid.attach(this.username_field, 1, 0, 3, 1);
+		this._grid.attach(username_field, 1, 0, 3, 1);
 		
 		return;
 	},
@@ -32,7 +34,7 @@ DuolingoStatusSettingsWidget.prototype = {
         scrollingWindow.show_all();
 		scrollingWindow.unparent();
 		scrollingWindow.connect('destroy', function() {
-			Settings.set_string('username', this.username_field.text);
+			Settings.set_string('username', username_field.text);
 		});
         return scrollingWindow;
     },

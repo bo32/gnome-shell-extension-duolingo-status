@@ -30,7 +30,6 @@ const DuolingoMenuButton = new Lang.Class({
         this.daily_coach = 0;
         this.daily_improvement = 0;
         
-        global.log('user: ' + Settings.get_string('username'));
 		let duolingo = new Duolingo(Settings.get_string('username'));
 		this.hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
 		let gicon = Gio.icon_new_for_string(Me.path + "/icons/duo_white.svg");
