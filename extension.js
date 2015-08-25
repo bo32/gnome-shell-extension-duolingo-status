@@ -14,6 +14,7 @@ const Duolingo = Me.imports.duolingo.Duolingo;
 const Util = imports.misc.util;
 const FLAGS = Me.imports.flagsKeys.flags;
 const Utils = Me.imports.utils;
+const Settings = Convenience.getSettings();
 
 let icon_size = 16;
 let menu;
@@ -25,12 +26,12 @@ const DuolingoMenuButton = new Lang.Class({
 
 	_init: function() {
         this.parent(0.0, 'duolingo');
-        let settings = Convenience.getSettings();
         
         this.daily_coach = 0;
         this.daily_improvement = 0;
         
-		let duolingo = new Duolingo(settings.get_string('username'));
+        global.log('user: ' + Settings.get_string('username'));
+		let duolingo = new Duolingo(Settings.get_string('username'));
 		this.hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
 		let gicon = Gio.icon_new_for_string(Me.path + "/icons/duo_white.svg");
 		let icon = new St.Icon({gicon: gicon, icon_size: icon_size});

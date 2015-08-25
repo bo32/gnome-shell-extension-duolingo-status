@@ -4,8 +4,9 @@ const Lang = imports.lang;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
+const Settings = Convenience.getSettings();
 
-CurrencyConverterSettingsWidget.prototype = {
+DuolingoStatusSettingsWidget.prototype = {
 
 	_init: function() {		
 		this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
@@ -22,7 +23,6 @@ CurrencyConverterSettingsWidget.prototype = {
 	
 	
 	_completePrefsWidget: function() {
-		let settings = Convenience.getSettings();
         let scrollingWindow = new Gtk.ScrolledWindow({
                                  'hscrollbar-policy': Gtk.PolicyType.AUTOMATIC,
                                  'vscrollbar-policy': Gtk.PolicyType.AUTOMATIC,
@@ -32,8 +32,7 @@ CurrencyConverterSettingsWidget.prototype = {
         scrollingWindow.show_all();
 		scrollingWindow.unparent();
 		scrollingWindow.connect('destroy', function() {
-			// TODO save the username
-			settings.set_string('username', this.username_field.text);
+			Settings.set_string('username', this.username_field.text);
 		});
         return scrollingWindow;
     },
@@ -43,12 +42,12 @@ CurrencyConverterSettingsWidget.prototype = {
 function init() {
 }
 
-function CurrencyConverterSettingsWidget() {
+function DuolingoStatusSettingsWidget() {
     this._init();
 }
 
 function buildPrefsWidget() {
-    let widget = new CurrencyConverterSettingsWidget();
+    let widget = new DuolingoStatusSettingsWidget();
 	return widget._completePrefsWidget();
 }
 
