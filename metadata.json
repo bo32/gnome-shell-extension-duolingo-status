@@ -1,0 +1,7 @@
+{
+	"name": "Duolingo Status", 
+	"shell-version": ["3.16.3"], 
+	"description": "Displays the status of your Duolingo account", 
+	"settings-schema": "org.gnome.shell.extensions.currencyconverter",
+	"uuid": "duolingostatus@david.bonnal.gmail.com"
+}
