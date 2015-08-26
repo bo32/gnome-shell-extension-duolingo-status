@@ -17,7 +17,7 @@ const Utils = Me.imports.utils;
 const Settings = Convenience.getSettings();
 
 let icon_size = 16;
-let menu;
+let menu_width = 250;
 let duolingo_green = '#78C800'
 
 const DuolingoMenuButton = new Lang.Class({
@@ -40,6 +40,7 @@ const DuolingoMenuButton = new Lang.Class({
 		
 		/* Duolingo menu */
 		let link_menu = new PopupMenu.PopupBaseMenuItem();
+		link_menu.actor.width = menu_width;
 		let link_label = new St.Label({ text: 'Duolingo.com', x_align: Clutter.ActorAlign.CENTER });
 		link_label.style = 'color: ' + duolingo_green + ';';
 		link_label.style += 'font-weight: bold;'
