@@ -41,7 +41,8 @@ const DuolingoMenuButton = new Lang.Class({
 		/* Duolingo menu */
 		let linkMenu = new PopupMenu.PopupBaseMenuItem();
 		linkMenu.actor.add(new St.Label({ text: 'Duolingo.com', x_align: Clutter.ActorAlign.CENTER }), { expand: true });
-		linkMenu.actor.style = 'color: ' + duolingo_green;
+		linkMenu.actor.style = 'color: ' + duolingo_green + ';';
+		linkMenu.actor.style += 'font-weight: bold;'
 		linkMenu.connect('activate', function() {
 			Util.spawn(['xdg-open', 'http://duolingo.com']);
 		});
@@ -101,24 +102,6 @@ const DuolingoMenuButton = new Lang.Class({
 		this.parent();
     },
 });
-
-/*const LanguageMenuItem = new Lang.Class({
-    Name: 'Duolingo.LanguageMenuItem',
-    Extends: PopupMenu.PopupBaseMenuItem,
-
-	_init: function(language) {
-		this.parent();
-
-		let flag_name = FLAGS[language['label']];
-		let gicon = Gio.icon_new_for_string(Me.path + '/icons/flags/' + flag_name);
-		let icon = new St.Icon({gicon: gicon, 'icon_size': icon_size});
-		let flagButton = new St.Button({child: icon});
-		this.actor.add(flagButton, { expand: false });
-		
-		this.actor.add(new St.Label({ text: language['label'] }), { expand: true });
-		this.actor.add(new St.Label({ text: 'lvl. ' + language['level'].toString() }), { expand: false });
-	},
-});*/
 
 const LanguageSubMenu = new Lang.Class({
     Name: 'Duolingo.LanguageMenu',

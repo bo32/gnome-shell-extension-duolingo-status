@@ -17,6 +17,7 @@ DuolingoStatusSettingsWidget.prototype = {
 
 		let username_label = new Gtk.Label({label: 'Username'});
 		username_field = new Gtk.Entry({hexpand: true});
+		username_field.text = Settings.get_string('username');
 		this._grid.attach(username_label, 0, 0, 1, 1);
 		this._grid.attach(username_field, 1, 0, 3, 1);
 		
