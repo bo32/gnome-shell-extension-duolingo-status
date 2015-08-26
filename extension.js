@@ -39,14 +39,22 @@ const DuolingoMenuButton = new Lang.Class({
 		this.actor.add_child(this.hbox);
 		
 		/* Duolingo menu */
-		let linkMenu = new PopupMenu.PopupBaseMenuItem();
-		linkMenu.actor.add(new St.Label({ text: 'Duolingo.com', x_align: Clutter.ActorAlign.CENTER }), { expand: true });
-		linkMenu.actor.style = 'color: ' + duolingo_green + ';';
-		linkMenu.actor.style += 'font-weight: bold;'
-		linkMenu.connect('activate', function() {
+		let link_menu = new PopupMenu.PopupBaseMenuItem();
+		let link_label = new St.Label({ text: 'Duolingo.com', x_align: Clutter.ActorAlign.CENTER });
+		link_label.style = 'color: ' + duolingo_green + ';';
+		link_label.style += 'font-weight: bold;'
+		link_menu.actor.add(link_label, { expand: true });
+		link_menu.connect('activate', function() {
 			Util.spawn(['xdg-open', 'http://duolingo.com']);
 		});
-		this.menu.addMenuItem(linkMenu);
+		
+		/* refresh button */
+		let refresh_icon = new St.Icon({ icon_name: 'view-refresh-symbolic', style_class: 'system-actions-icon', icon_size: icon_size });
+		let refresh_button = new St.Button({child: refresh_icon});
+		refresh_button.connect('clicked', this._refresh);
+		link_menu.actor.add(refresh_button, {expand: false});
+		
+		this.menu.addMenuItem(link_menu);
 		
 		/* display profile menu */ 
 		this.todays_improvement = new St.Label();
@@ -55,17 +63,10 @@ const DuolingoMenuButton = new Lang.Class({
 		this.menu.addMenuItem(profile_menu);
 		let today = new Date();
 		duolingo.get_improvement(today, Lang.bind(this, this._set_todays_improvement));
-		
-		/* refresh button */
-		let refresh_icon = new St.Icon({ icon_name: 'view-refresh-symbolic', style_class: 'system-actions-icon', icon_size: icon_size });
-		let refresh_button = new St.Button({child: refresh_icon});
-		refresh_button.connect('clicked', this._refresh);
-		profile_menu.actor.add(refresh_button, {expand: false});
+		duolingo.get_lingots(Lang.bind(profile_menu, this._display_lingots));
 				
 		/* display language menus */
 		duolingo.get_languages(Lang.bind(this, this._add_language_menus));
-		
-		
 	},
 	
 	_refresh: function() {
@@ -75,11 +76,17 @@ const DuolingoMenuButton = new Lang.Class({
 	
 	_add_language_menus: function(languages) {
 		for (let l in languages) {
-			//let m = new LanguageMenuItem(languages[l]);
-			//let m = new LanguageMenu(this.actor, 1.0, St.Side.TOP, languages[l]);
 			let m = new LanguageSubMenu(languages[l]);
 			this.menu.addMenuItem(m);
 		}
+	},
+	
+	_display_lingots: function(amount) {
+		let gicon = Gio.icon_new_for_string(Me.path + "/icons/ruby.png");
+		let lingots_icon = new St.Icon({gicon: gicon, icon_size: icon_size});
+		this.actor.add(lingots_icon);
+		let lingots_label = new St.Label({text: Utils.formatThousandNumber(amount.toString())});
+		this.actor.add(lingots_label);
 	},
 	
 	_set_todays_improvement: function(improvement, daily_goal) {

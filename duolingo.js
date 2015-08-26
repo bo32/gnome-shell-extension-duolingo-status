@@ -85,13 +85,9 @@ const Duolingo = new Lang.Class({
 		let request = Soup.Message.new('GET', url);
 		let session = new Soup.SessionSync();
 		session.queue_message(request, Lang.bind(this, function(session, response) {
-			let props = JSON.parse(response.response_body.data).tracking_properties;
-			global.log(typeof(props));
-			/*for (let p in props) {
-				global.log(props[p].lingots);
-			}*/
+			let lingots = JSON.parse(response.response_body.data).rupees;
 			if (callback) {
-				callback();
+				callback(lingots);
 			}
 		}));
 	},
