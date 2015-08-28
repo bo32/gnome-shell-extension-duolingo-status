@@ -1,9 +1,9 @@
 const Shell = imports.gi.Shell;
 const St = imports.gi.St;
 const Main = imports.ui.main;
-//const Panel = imports.ui.panel;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
+const Slider = imports.ui.slider;
 const Lang = imports.lang;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Gio = imports.gi.Gio;
@@ -32,10 +32,10 @@ const DuolingoMenuButton = new Lang.Class({
         
 		let duolingo = new Duolingo(Settings.get_string('username'));
 		this.hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
-		let gicon = Gio.icon_new_for_string(Me.path + "/icons/duo_white.svg");
+		let gicon = Gio.icon_new_for_string(Me.path + "/icons/duolingo-symbolic.svg");
 		let icon = new St.Icon({gicon: gicon, icon_size: icon_size});
         this.hbox.add_child(icon);
-		this.hbox.add_child(PopupMenu.arrowIcon(St.Side.BOTTOM));
+        this.actor.add_style_class_name("panel-status-button");
 		this.actor.add_child(this.hbox);
 		
 		/* Duolingo menu */
@@ -64,10 +64,13 @@ const DuolingoMenuButton = new Lang.Class({
 		this.menu.addMenuItem(profile_menu);
 		let today = new Date();
 		duolingo.get_improvement(today, Lang.bind(this, this._set_todays_improvement));
-		duolingo.get_lingots(Lang.bind(profile_menu, this._display_lingots));
 				
 		/* display language menus */
 		duolingo.get_languages(Lang.bind(this, this._add_language_menus));
+		duolingo.get_lingots(Lang.bind(profile_menu, this._display_lingots));
+		
+		//duolingo.get_streak(Lang.bind(this, this._add_streak_menu));
+		
 	},
 	
 	_refresh: function() {
@@ -82,6 +85,13 @@ const DuolingoMenuButton = new Lang.Class({
 		}
 	},
 	
+	_add_streak_menu: function(points) {
+		let menu = new PopupMenu.PopupBaseMenuItem();
+		let label_streak = new St.Label({text: points.toString(), x_align: Clutter.ActorAlign.CENTER });
+		menu.actor.add(label_streak, {expand: true});
+		this.menu.addMenuItem(menu);
+	},
+	
 	_display_lingots: function(amount) {
 		let gicon = Gio.icon_new_for_string(Me.path + "/icons/ruby.png");
 		let lingots_icon = new St.Icon({gicon: gicon, icon_size: icon_size});
@@ -93,17 +103,12 @@ const DuolingoMenuButton = new Lang.Class({
 	_set_todays_improvement: function(improvement, daily_goal) {
 		this.today_improvement = improvement;
 		this.daily_goal = daily_goal;
-		this.todays_improvement.text = improvement + ' / ' + daily_goal + ' today.';
-		if (improvement < daily_goal) {
-			let gicon = Gio.icon_new_for_string(Me.path + "/icons/duo_red.svg");
-			let icon = new St.Icon({gicon: gicon, icon_size: icon_size});
-			this.hbox.remove_all_children();
-			this.hbox.add_child(icon);
-		}
-	},
-	
-	_get_total_experience: function() {
+		this.todays_improvement.text = improvement + ' / ' + daily_goal + ' XP';
 		
+		let is_daily_goal_reached = improvement >= daily_goal;
+		
+		if (!is_daily_goal_reached) {
+			this.hbox.get_child_at_index(0).style
 	},
 
     destroy: function() {
@@ -124,7 +129,7 @@ const LanguageSubMenu = new Lang.Class({
 		this.icon.icon_size = icon_size;
 		
 		/* Insert the current level of the language. 5 is the index of the last position in the sub menu */
-		this.actor.insert_child_at_index(new St.Label({ text: 'lvl. ' + language['level'].toString() }), 5);
+		this.actor.insert_child_at_index(new St.Label({ text: 'lvl. ' + language['level'].toString(), y_align: Clutter.ActorAlign.CENTER }), 5);
 		
 		/* Add the menu displaying the global points of the language */
 		let menu_total_points = new PopupMenu.PopupBaseMenuItem();
