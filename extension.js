@@ -108,7 +108,8 @@ const DuolingoMenuButton = new Lang.Class({
 		let is_daily_goal_reached = improvement >= daily_goal;
 		
 		if (!is_daily_goal_reached) {
-			this.hbox.get_child_at_index(0).style
+			this.hbox.get_child_at_index(0).style = 'color: red;'
+		}
 	},
 
     destroy: function() {
