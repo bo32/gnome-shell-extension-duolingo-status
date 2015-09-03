@@ -63,9 +63,15 @@ const DuolingoMenuButton = new Lang.Class({
 	
 	_create_menus: function() {		
 		/* display profile menu */ 
-		this.todays_improvement = new St.Label();
+		this.todays_improvement = new St.Label({y_align: Clutter.ActorAlign.CENTER});
 		this.profile_menu = new PopupMenu.PopupBaseMenuItem();
-		this.profile_menu.actor.add(this.todays_improvement, {expand: true});
+		this.profile_menu.actor.add(this.todays_improvement);//, {expand: true});
+		
+		this.streak = new St.Label({x_align: Clutter.ActorAlign.CENTER, y_align: Clutter.ActorAlign.CENTER });
+		this.streak.text = this.duolingo.get_streak() != 0 ? this.duolingo.get_streak().toString() : '';
+		this.streak.style_class = 'streak';
+		this.profile_menu.actor.add(this.streak, {expand: true});
+		
 		this.menu.addMenuItem(this.profile_menu);
 		let today = new Date();
 		let improvement = this.duolingo.get_improvement(today);
@@ -75,10 +81,9 @@ const DuolingoMenuButton = new Lang.Class({
 		/* display language menus */
 		let languages = this.duolingo.get_languages();
 		this._add_language_menus(languages);
+		
 		let lingots = this.duolingo.get_lingots();
 		this._display_lingots(lingots);
-		
-		//this.duolingo.get_streak(Lang.bind(this, this._add_streak_menu));
 	},
 	
 	_refresh: function() {
@@ -93,18 +98,11 @@ const DuolingoMenuButton = new Lang.Class({
 		}
 	},
 	
-	_add_streak_menu: function(points) {
-		let menu = new PopupMenu.PopupBaseMenuItem();
-		let label_streak = new St.Label({text: points.toString(), x_align: Clutter.ActorAlign.CENTER });
-		menu.actor.add(label_streak, {expand: true});
-		this.menu.addMenuItem(menu);
-	},
-	
 	_display_lingots: function(amount) {
 		let gicon = Gio.icon_new_for_string(Me.path + "/icons/ruby.png");
-		let lingots_icon = new St.Icon({gicon: gicon, icon_size: icon_size});
+		let lingots_icon = new St.Icon({gicon: gicon, icon_size: icon_size, y_align:Clutter.ActorAlign.CENTER});
 		this.profile_menu.actor.add(lingots_icon);
-		let lingots_label = new St.Label({text: Utils.formatThousandNumber(amount.toString())});
+		let lingots_label = new St.Label({y_align:Clutter.ActorAlign.CENTER, text: Utils.formatThousandNumber(amount.toString())});
 		this.profile_menu.actor.add(lingots_label);
 	},
 	

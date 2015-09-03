@@ -1,0 +1,7 @@
+.streak {
+	font-weight: bold;
+	color: #ffa200;
+	border: 2px solid #ffa200;
+	padding: 1px, 2px, 1px, 3px;
+    border-radius: 10px;
+}

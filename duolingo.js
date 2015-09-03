@@ -82,6 +82,10 @@ const Duolingo = new Lang.Class({
 	get_lingots: function() {
 		return this.raw_data.rupees;
 	},
+	
+	get_streak: function() {
+		return this.raw_data.site_streak;
+	},
 });	
 	
 	
