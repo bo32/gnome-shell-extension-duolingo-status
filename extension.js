@@ -68,8 +68,12 @@ const DuolingoMenuButton = new Lang.Class({
 		this.profile_menu.actor.add(this.todays_improvement);//, {expand: true});
 		
 		this.streak = new St.Label({x_align: Clutter.ActorAlign.CENTER, y_align: Clutter.ActorAlign.CENTER });
-		this.streak.text = this.duolingo.get_streak() != 0 ? this.duolingo.get_streak().toString() : '';
-		this.streak.style_class = 'streak';
+		if (this.duolingo.get_streak() != 0) {
+			this.streak.text =  this.duolingo.get_streak().toString();
+			this.streak.style_class = 'streak';
+		} else {
+			this.streak.text = '';
+		}
 		this.profile_menu.actor.add(this.streak, {expand: true});
 		
 		this.menu.addMenuItem(this.profile_menu);
