@@ -15,11 +15,19 @@ DuolingoStatusSettingsWidget.prototype = {
                                   row_spacing: 4,
                                   column_spacing: 4 });
 
-		let username_label = new Gtk.Label({label: 'Username'});
-		username_field = new Gtk.Entry({hexpand: true});
+		let username_label = new Gtk.Label({label: 'Username', halign: Gtk.Align.START});
+		username_field = new Gtk.Entry({hexpand: true, halign: Gtk.Align.FILL});
 		username_field.text = Settings.get_string('username');
 		this._grid.attach(username_label, 0, 0, 1, 1);
 		this._grid.attach(username_field, 1, 0, 3, 1);
+		
+		let hide_icon_label = new Gtk.Label({label: 'Hide icon when daily goal is reached', hexpand: true, halign: Gtk.Align.START});
+		this._grid.attach(hide_icon_label, 0, 1, 3, 1);
+		let hide_icon_switch = new Gtk.Switch({active: Settings.get_boolean('hide-when-daily-goal-reached'), halign: Gtk.Align.END});
+		hide_icon_switch.connect('notify::active', function() {
+			Settings.set_boolean('hide-when-daily-goal-reached', hide_icon_switch.active);
+		});
+		this._grid.attach(hide_icon_switch, 3, 1, 1, 1);
 		
 		return;
 	},

@@ -6,6 +6,10 @@
 	<key type="s" name="username">
         <default>''</default>
     </key>
+    
+    <key type="b" name="hide-when-daily-goal-reached">
+    	<default>false</default>
+    </key> 
 
   </schema>
 </schemalist>

@@ -27,17 +27,22 @@ const DuolingoMenuButton = new Lang.Class({
 	_init: function() {
         this.parent(0.0, 'duolingo');
         
-        this.daily_coach = 0;
-        this.daily_improvement = 0;
-        
 		this.duolingo = new Duolingo(Settings.get_string('username'));
+		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
+	},
+	
+	_create_menus: function() {		
+		if (Settings.get_boolean('hide-when-daily-goal-reached') && this.duolingo.is_daily_goal_reached()) {
+			this.destroy();
+			return;
+		}
+		
 		this.hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
 		let gicon = Gio.icon_new_for_string(Me.path + "/icons/duolingo-symbolic.svg");
 		let icon = new St.Icon({gicon: gicon, icon_size: icon_size});
         this.hbox.add_child(icon);
         this.actor.add_style_class_name("panel-status-button");
 		this.actor.add_child(this.hbox);
-		
 		
 		/* Duolingo menu */
 		let link_menu = new PopupMenu.PopupBaseMenuItem();
@@ -57,24 +62,19 @@ const DuolingoMenuButton = new Lang.Class({
 		link_menu.actor.add(refresh_button, {expand: false});
 		
 		this.menu.addMenuItem(link_menu);
-		
-		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
-	},
-	
-	_create_menus: function() {		
 		/* display profile menu */ 
 		this.todays_improvement = new St.Label({y_align: Clutter.ActorAlign.CENTER});
 		this.profile_menu = new PopupMenu.PopupBaseMenuItem();
-		this.profile_menu.actor.add(this.todays_improvement);//, {expand: true});
+		this.profile_menu.actor.add(this.todays_improvement);
 		
-		this.streak = new St.Label({x_align: Clutter.ActorAlign.CENTER, y_align: Clutter.ActorAlign.CENTER });
+		let streak_label = new St.Label({x_align: Clutter.ActorAlign.CENTER, y_align: Clutter.ActorAlign.CENTER });
 		if (this.duolingo.get_streak() != 0) {
-			this.streak.text =  this.duolingo.get_streak().toString();
-			this.streak.style_class = 'streak';
+			streak_label.text =  this.duolingo.get_streak().toString();
+			streak_label.style_class = 'streak';
 		} else {
-			this.streak.text = '';
+			streak_label.text = '';
 		}
-		this.profile_menu.actor.add(this.streak, {expand: true});
+		this.profile_menu.actor.add(streak_label, {expand: true});
 		
 		this.menu.addMenuItem(this.profile_menu);
 		let today = new Date();
