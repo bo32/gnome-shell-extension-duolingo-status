@@ -17,6 +17,11 @@ const Duolingo = new Lang.Class({
 	If the user is not found, displays a notification, and the menu is not built.
 	If an error different than 200 is returned, displays a notification, and the menu is not built. */
 	get_raw_data: function(callback) {
+		if (!this.login) {
+			callback( "Please enter a username in the settings.");
+			return;
+		}		
+		
 		let url = 'http://duolingo.com/users/' + this.login;
 		let request = Soup.Message.new('GET', url);
 		let session = new Soup.SessionSync();
@@ -24,13 +29,12 @@ const Duolingo = new Lang.Class({
 			if (response.status_code == 200) {
 				try {
 					this.raw_data = JSON.parse(response.response_body.data);
+					callback();
 				} catch (err) {
-					Main.notify('Duolingo Status extension', "The user couldn't be found.");
+					callback("The user couldn't be found.");
 				}
-				if (callback)
-					callback(this.raw_data);
 			} else {
-				Main.notify('Duolingo Status extension', "The server couldn't be reached.");
+				callback("The server couldn't be reached.");
 			}
 		}));
 	},
@@ -66,7 +70,7 @@ const Duolingo = new Lang.Class({
 				language['level'] = languages[l].level;
 				language['points'] = languages[l].points;
 				language['to_next_level'] = languages[l].to_next_level;
-				
+			
 				/* add the current language in the final list */
 				if (Boolean(languages[l].current_learning)) {
 					let tmp = [language];
@@ -91,20 +95,4 @@ const Duolingo = new Lang.Class({
 		return this.get_improvement() >= this.get_daily_goal();
 	},
 });	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 

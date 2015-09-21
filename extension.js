@@ -18,7 +18,8 @@ const Settings = Convenience.getSettings();
 
 let icon_size = 16;
 let menu_width = 250;
-let duolingo_green = '#78C800'
+let duolingo_green = '#78C800';
+let notification_label = 'Duolingo Status extension';
 
 const DuolingoMenuButton = new Lang.Class({
     Name: 'Duolingo.DuolingoMenuButton',
@@ -31,7 +32,7 @@ const DuolingoMenuButton = new Lang.Class({
 		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
 	},
 	
-	_create_menus: function() {		
+	_create_menus: function(error) {		
 		if (Settings.get_boolean('hide-when-daily-goal-reached') && this.duolingo.is_daily_goal_reached()) {
 			this.destroy();
 			return;
@@ -62,6 +63,12 @@ const DuolingoMenuButton = new Lang.Class({
 		link_menu.actor.add(refresh_button, {expand: false});
 		
 		this.menu.addMenuItem(link_menu);
+		
+		if(error) {
+			Main.notify(notification_label, error);
+			return;
+		};
+		
 		/* display profile menu */ 
 		this.todays_improvement = new St.Label({y_align: Clutter.ActorAlign.CENTER});
 		this.profile_menu = new PopupMenu.PopupBaseMenuItem();
