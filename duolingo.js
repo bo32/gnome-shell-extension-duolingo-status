@@ -31,6 +31,7 @@ const Duolingo = new Lang.Class({
 					this.raw_data = JSON.parse(response.response_body.data);
 					callback();
 				} catch (err) {
+					global.log(err);
 					callback("The user couldn't be found.");
 				}
 			} else {

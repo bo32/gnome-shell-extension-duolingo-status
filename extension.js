@@ -115,6 +115,11 @@ const DuolingoMenuButton = new Lang.Class({
 		this.profile_menu.actor.add(lingots_icon);
 		let lingots_label = new St.Label({y_align:Clutter.ActorAlign.CENTER, text: Utils.formatThousandNumber(amount.toString())});
 		this.profile_menu.actor.add(lingots_label);
+		this.profile_menu.connect('activate', this._open_lingots_link);
+	},
+	
+	_open_lingots_link: function() {
+		Util.spawn(['xdg-open', 'http://duolingo.com/show_store']);
 	},
 	
 	_set_todays_improvement: function(improvement, daily_goal) {
