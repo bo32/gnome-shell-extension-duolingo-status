@@ -22,7 +22,7 @@ const Duolingo = new Lang.Class({
 			return;
 		}		
 		
-		let url = 'http://duolingo.com/users/' + this.login;
+		let url = 'https://duolingo.com/users/' + this.login;
 		let request = Soup.Message.new('GET', url);
 		let session = new Soup.SessionSync();
 		session.queue_message(request, Lang.bind(this, function(session, response) {
@@ -41,7 +41,7 @@ const Duolingo = new Lang.Class({
 	},
 	
 	/** Returns the sum of improvements for the given date */
-	get_improvement: function(date) {
+	get_improvement: function(now) {
 		let improvements = this.raw_data.calendar;
 		let sum = 0;
 		for (let i in improvements) {
