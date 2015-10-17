@@ -3,7 +3,8 @@ const Soup = imports.gi.Soup;
 const Main = imports.ui.main;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
-const DateUtils = Me.imports.dateUtils;
+const TimeZone = imports.gi.GLib.TimeZone;
+const DateTime = imports.gi.GLib.DateTime;
 
 const Duolingo = new Lang.Class({
 	Name: 'Duolingo',
@@ -40,13 +41,24 @@ const Duolingo = new Lang.Class({
 		}));
 	},
 	
+	get_duolingos_daystart : function() {
+		let tz = TimeZone.new("America/New_York");
+		let now = DateTime.new_now(tz);
+		let year = now.get_year();
+		let month = now.get_month();
+		let day = now.get_day_of_month();
+		let day_start = DateTime.new(tz, year, month, day, 0, 0, 0.0);
+		return day_start.to_utc().to_unix() * 1000;
+	},
+
 	/** Returns the sum of improvements for the given date */
-	get_improvement: function(now) {
+	get_improvement: function() {
+		let take_after = this.get_duolingos_daystart();
 		let improvements = this.raw_data.calendar;
 		let sum = 0;
 		for (let i in improvements) {
-			let date = new Date(improvements[i].datetime);
-			if (DateUtils.isToday(date)) {
+			let date = improvements[i].datetime;
+			if (take_after < date) {
 				sum += parseInt(improvements[i].improvement);
 			}
 		}
