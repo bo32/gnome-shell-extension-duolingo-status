@@ -21,4 +21,5 @@ Thanks to IconFinder for finding my icons.
 
 ###CHANGELOG
 
+2015/10/24: update gnome-shell 3.18, update getImprovement method.
 2015/09/16: option allowing to hide the icon in the top bar, once the daily goal is reached.
