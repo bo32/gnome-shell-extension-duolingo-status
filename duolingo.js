@@ -41,7 +41,7 @@ const Duolingo = new Lang.Class({
 		}));
 	},
 	
-	/* Returns today's timestamp at midnight */
+	/* Returns today's timestamp at midnight, relative to your time zone. */
 	get_duolingos_daystart : function() {
 		let tz = TimeZone.new_local();
 		let now = DateTime.new_now(tz);
