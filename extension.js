@@ -15,6 +15,7 @@ const Util = imports.misc.util;
 const FLAGS = Me.imports.flagsKeys.flags;
 const Utils = Me.imports.utils;
 const Settings = Convenience.getSettings();
+const GLib = imports.gi.GLib;
 
 let icon_size = 16;
 let menu_width = 250;
@@ -84,8 +85,7 @@ const DuolingoMenuButton = new Lang.Class({
 		this.profile_menu.actor.add(streak_label, {expand: true});
 		
 		this.menu.addMenuItem(this.profile_menu);
-		let today = new Date();
-		let improvement = this.duolingo.get_improvement(today);
+		let improvement = this.duolingo.get_improvement();
 		let daily_goal = this.duolingo.get_daily_goal();
 		this._set_todays_improvement(improvement, daily_goal);
 				

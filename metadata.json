@@ -1,6 +1,6 @@
 {
 	"name": "Duolingo Status", 
-	"shell-version": ["3.16.3"], 
+	"shell-version": ["3.16.3", "3.18"],
 	"description": "Displays the status of your Duolingo account", 
 	"settings-schema": "org.gnome.shell.extensions.duolingostatus",
 	"uuid": "duolingostatus@david.bonnal.gmail.com"
