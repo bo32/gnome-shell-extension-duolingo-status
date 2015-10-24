@@ -41,13 +41,14 @@ const Duolingo = new Lang.Class({
 		}));
 	},
 	
+	/* Returns today's timestamp at midnight */
 	get_duolingos_daystart : function() {
-		let tz = TimeZone.new("America/New_York");
+		let tz = TimeZone.new_local();
 		let now = DateTime.new_now(tz);
 		let year = now.get_year();
 		let month = now.get_month();
 		let day = now.get_day_of_month();
-		let day_start = DateTime.new(tz, year, month, day, 0, 0, 0.0);
+		let day_start = DateTime.new(tz,year, month, day, 0, 0, 0.0);
 		return day_start.to_utc().to_unix() * 1000;
 	},
 
