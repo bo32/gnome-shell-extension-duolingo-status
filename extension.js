@@ -131,6 +131,10 @@ const DuolingoMenuButton = new Lang.Class({
 		
 		if (!is_daily_goal_reached) {
 			this.hbox.get_child_at_index(0).style = 'color: red;'
+		} else {
+			if(Settings.get_boolean('change-icon-color-when-daily-goal-reached')) {
+				this.hbox.get_child_at_index(0).style = 'color: ' + Settings.get_string('icon-color-when-daily-goal-reached') +';'
+			}
 		}
 	},
 
@@ -161,7 +165,7 @@ const LanguageSubMenu = new Lang.Class({
 		this.menu.addMenuItem(menu_total_points);
 		
 		let menu_next_level = new PopupMenu.PopupBaseMenuItem();
-		menu_next_level.actor.add(new St.Label({text: 'Next level', x_expand: true}));
+		menu_next_level.actor.add(new St.Label({text: 'Next level in', x_expand: true}));
 		menu_next_level.actor.add(new St.Label({text: Utils.formatThousandNumber(language['to_next_level'].toString()) + ' XP'}));
 		this.menu.addMenuItem(menu_next_level);
 	},

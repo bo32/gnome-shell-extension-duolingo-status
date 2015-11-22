@@ -9,7 +9,15 @@
     
     <key type="b" name="hide-when-daily-goal-reached">
     	<default>false</default>
+    </key>
+    
+    <key type="b" name="change-icon-color-when-daily-goal-reached">
+    	<default>false</default>
     </key> 
+    
+    <key type="s" name="icon-color-when-daily-goal-reached">
+    	<default>'rgb(138,226,52)'</default>
+    </key>
 
   </schema>
 </schemalist>
