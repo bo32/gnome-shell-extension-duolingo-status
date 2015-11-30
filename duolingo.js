@@ -5,6 +5,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const TimeZone = imports.gi.GLib.TimeZone;
 const DateTime = imports.gi.GLib.DateTime;
+const Thread = imports.gi.GLib.Thread;
 
 const Duolingo = new Lang.Class({
 	Name: 'Duolingo',
@@ -12,6 +13,7 @@ const Duolingo = new Lang.Class({
 	_init: function(login) {
 		this.login = login;
 		this.raw_data = null;
+		this.timeouts = 3;
 	},
 	
 	/* Calls the server and saves the answer in the property raw_data.
@@ -23,7 +25,7 @@ const Duolingo = new Lang.Class({
 			return;
 		}		
 		
-		let url = 'https://duolingo.com/users/' + this.login;
+		let url = 'https://duolingo.com/udsers/' + this.login;
 		let request = Soup.Message.new('GET', url);
 		let session = new Soup.SessionSync();
 		session.queue_message(request, Lang.bind(this, function(session, response) {
@@ -36,6 +38,13 @@ const Duolingo = new Lang.Class({
 					callback("The user couldn't be found.");
 				}
 			} else {
+				// TODO retry 3 times if failure, after a delay of 5sec or something
+				Thread.usleep (3);
+				if (this.timeouts > 0) {
+					global.log('timeouts' + this.timeouts);
+					this.timeouts -= 1;
+					timeout.add_seconds(3, get_raw_data(callback));
+				}
 				callback("The server couldn't be reached.");
 			}
 		}));
