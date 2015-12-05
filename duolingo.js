@@ -25,7 +25,7 @@ const Duolingo = new Lang.Class({
 			return;
 		}		
 		
-		let url = 'https://duolingo.com/udsers/' + this.login;
+		let url = 'https://duolingo.com/users/' + this.login;
 		let request = Soup.Message.new('GET', url);
 		let session = new Soup.SessionSync();
 		session.queue_message(request, Lang.bind(this, function(session, response) {
@@ -39,12 +39,6 @@ const Duolingo = new Lang.Class({
 				}
 			} else {
 				// TODO retry 3 times if failure, after a delay of 5sec or something
-				Thread.usleep (3);
-				if (this.timeouts > 0) {
-					global.log('timeouts' + this.timeouts);
-					this.timeouts -= 1;
-					timeout.add_seconds(3, get_raw_data(callback));
-				}
 				callback("The server couldn't be reached.");
 			}
 		}));
