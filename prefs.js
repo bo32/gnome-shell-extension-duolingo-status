@@ -34,7 +34,7 @@ DuolingoStatusSettingsWidget.prototype = {
 		
 		/* Change icon color when daily goal is reached */
 		let change_icon_color_label = new Gtk.Label({label: 'Icon color when daily goal is reached', hexpand: true, halign: Gtk.Align.START});
-		this._grid.attach(change_icon_color_label, 0, 3, 2, 1);
+		this._grid.attach(change_icon_color_label, 0, 2, 2, 1);
 		
 		let initial_active = Settings.get_boolean('change-icon-color-when-daily-goal-reached');
 		let enable_change_icon_color_label_switch = new Gtk.Switch({active: initial_active, halign: Gtk.Align.END});
@@ -42,7 +42,7 @@ DuolingoStatusSettingsWidget.prototype = {
 			Settings.set_boolean('change-icon-color-when-daily-goal-reached', enable_change_icon_color_label_switch.active);
 			color_picker_button.set_sensitive(enable_change_icon_color_label_switch.active);
 		});
-		this._grid.attach(enable_change_icon_color_label_switch, 2, 3, 1, 1);
+		this._grid.attach(enable_change_icon_color_label_switch, 2, 2, 1, 1);
 		
 		let color_picker_button = new Gtk.ColorButton({halign: Gtk.Align.CENTER});
 		color_picker_button.set_use_alpha(false);
@@ -53,6 +53,20 @@ DuolingoStatusSettingsWidget.prototype = {
 			Settings.set_string('icon-color-when-daily-goal-reached', color_picker_button.rgba.to_string());
 		});
 		color_picker_button.set_sensitive(initial_active);
+		this._grid.attach(color_picker_button, 3, 2, 1, 1);
+		
+		/* Change icon color when daily goal is reached */
+		change_icon_color_label = new Gtk.Label({label: 'Icon color when daily goal is reached', hexpand: true, halign: Gtk.Align.START});
+		this._grid.attach(change_icon_color_label, 0, 3, 2, 1);
+		
+		color_picker_button = new Gtk.ColorButton({halign: Gtk.Align.CENTER});
+		color_picker_button.set_use_alpha(false);
+		let rgba = new Gdk.RGBA();
+		rgba.parse(Settings.get_string('icon-color-when-daily-goal-not-reached'));
+		color_picker_button.set_rgba(rgba);
+		color_picker_button.connect('color-set', function() {
+			Settings.set_string('icon-color-when-daily-goal-not-reached', color_picker_button.rgba.to_string());
+		});
 		this._grid.attach(color_picker_button, 3, 3, 1, 1);
 		
 		return;

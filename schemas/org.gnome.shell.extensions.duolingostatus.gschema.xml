@@ -18,6 +18,10 @@
     <key type="s" name="icon-color-when-daily-goal-reached">
     	<default>'rgb(138,226,52)'</default>
     </key>
+    
+    <key type="s" name="icon-color-when-daily-goal-not-reached">
+    	<default>'rgb(255,0,0)'</default>
+    </key>
 
   </schema>
 </schemalist>
