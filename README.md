@@ -25,3 +25,4 @@ Thanks to IconFinder for finding my icons.
 2015/09/16: option allowing hiding the icon in the top bar, once the daily goal is reached.  
 2015/11/22: option allowing changing the icon color when the daily goal is reached.  
 2015/11/26: add new Klingon, Catalan, Czech, Swahili and Welsh flags.  
+2015/12/05: option allowing changing the icon color when the daily goal is not reached.  
