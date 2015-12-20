@@ -39,36 +39,15 @@ const DuolingoMenuButton = new Lang.Class({
 			return;
 		}
 		
-		this.hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
-		let gicon = Gio.icon_new_for_string(Me.path + "/icons/duolingo-symbolic.svg");
-		let icon = new St.Icon({gicon: gicon, icon_size: icon_size});
-        this.hbox.add_child(icon);
-        this.actor.add_style_class_name("panel-status-button");
-		this.actor.add_child(this.hbox);
-		
-		/* Duolingo menu */
-		let link_menu = new PopupMenu.PopupBaseMenuItem();
-		link_menu.actor.width = menu_width;
-		let link_label = new St.Label({ text: 'Duolingo.com', x_align: Clutter.ActorAlign.CENTER });
-		link_label.style = 'color: ' + duolingo_green + ';';
-		link_label.style += 'font-weight: bold;'
-		link_menu.actor.add(link_label, { expand: true });
-		link_menu.connect('activate', function() {
-			Util.spawn(['xdg-open', 'http://duolingo.com']);
-		});
-		
-		/* refresh button */
-		let refresh_icon = new St.Icon({ icon_name: 'view-refresh-symbolic', style_class: 'system-actions-icon', icon_size: icon_size });
-		let refresh_button = new St.Button({child: refresh_icon});
-		refresh_button.connect('clicked', this._refresh);
-		link_menu.actor.add(refresh_button, {expand: false});
-		
-		this.menu.addMenuItem(link_menu);
-		
 		if(error) {
 			Main.notify(notification_label, error);
+			this._init_icon(Me.path + "/icons/duolingo-alert-symbolic.svg");
+			this._init_duolingo_menu();
 			return;
 		};
+		
+		this._init_icon(Me.path + "/icons/duolingo-symbolic.svg");
+		this._init_duolingo_menu();
 		
 		/* display profile menu */ 
 		this.todays_improvement = new St.Label({y_align: Clutter.ActorAlign.CENTER});
@@ -95,6 +74,36 @@ const DuolingoMenuButton = new Lang.Class({
 		
 		let lingots = this.duolingo.get_lingots();
 		this._display_lingots(lingots);
+	},
+	
+	_init_icon: function(path) {
+		this.hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
+		let gicon = Gio.icon_new_for_string(path);
+		let icon = new St.Icon({gicon: gicon, icon_size: icon_size});
+        this.hbox.add_child(icon);
+        this.actor.add_style_class_name("panel-status-button");
+		this.actor.add_child(this.hbox);
+	},
+	
+	_init_duolingo_menu: function() {
+		/* Duolingo menu */
+		let link_menu = new PopupMenu.PopupBaseMenuItem();
+		link_menu.actor.width = menu_width;
+		let link_label = new St.Label({ text: 'Duolingo.com', x_align: Clutter.ActorAlign.CENTER });
+		link_label.style = 'color: ' + duolingo_green + ';';
+		link_label.style += 'font-weight: bold;'
+		link_menu.actor.add(link_label, { expand: true });
+		link_menu.connect('activate', function() {
+			Util.spawn(['xdg-open', 'http://duolingo.com']);
+		});
+		
+		/* refresh button */
+		let refresh_icon = new St.Icon({ icon_name: 'view-refresh-symbolic', style_class: 'system-actions-icon', icon_size: icon_size });
+		let refresh_button = new St.Button({child: refresh_icon});
+		refresh_button.connect('clicked', this._refresh);
+		link_menu.actor.add(refresh_button, {expand: false});
+		
+		this.menu.addMenuItem(link_menu);
 	},
 	
 	_refresh: function() {
