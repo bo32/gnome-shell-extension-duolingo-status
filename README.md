@@ -28,3 +28,4 @@ Thanks to IconFinder for finding my icons.
 2015/11/26: add new Klingon, Catalan, Czech, Swahili and Welsh flags.  
 2015/12/05: option allowing changing the icon color when the daily goal is not reached.  
 2015/12/27: option allowing changing the browser you want to open Duolingo with, via the shortcut in the extension.  
+2015/12/27: if the connection fails, the program tries to reach the server 2 other times.  
