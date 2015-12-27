@@ -6,6 +6,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const TimeZone = imports.gi.GLib.TimeZone;
 const DateTime = imports.gi.GLib.DateTime;
 const Thread = imports.gi.GLib.Thread;
+const Mainloop = imports.mainloop;
 
 const Duolingo = new Lang.Class({
 	Name: 'Duolingo',
@@ -38,8 +39,14 @@ const Duolingo = new Lang.Class({
 					callback("The user couldn't be found.");
 				}
 			} else {
-				// TODO retry 3 times if failure, after a delay of 5sec or something
-				callback("The server couldn't be reached.");
+				this.timeouts--;
+				if (this.timeouts == 0) {
+					callback("The server couldn't be reached.");
+				} else {
+					Mainloop.timeout_add(3500, Lang.bind(this, function() {
+						this.get_raw_data(callback);
+					}));
+				}
 			}
 		}));
 	},
