@@ -16,7 +16,6 @@ const FLAGS = Me.imports.flagsKeys.flags;
 const Utils = Me.imports.utils;
 const Settings = Convenience.getSettings();
 const GLib = imports.gi.GLib;
-const GioSSS = Gio.SettingsSchemaSource;
 
 let icon_size = 16;
 let menu_width = 250;
@@ -28,7 +27,6 @@ const DuolingoMenuButton = new Lang.Class({
     Extends: PanelMenu.Button,
 
 	_init: function() {
-//		let schemaSource = GioSSS.new_from_directory(Me.path + "/schemas", GioSSS.get_default(), false);
         this.parent(0.0, 'duolingo');
         
 		this.duolingo = new Duolingo(Settings.get_string('username'));
