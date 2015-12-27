@@ -22,6 +22,18 @@
     <key type="s" name="icon-color-when-daily-goal-not-reached">
     	<default>'rgb(255,0,0)'</default>
     </key>
+    
+    <key type="b" name="use-default-browser">
+    	<default>true</default>
+    </key> 
+    
+    <key type="s" name="opening-browser-command">
+    	<default>'xdg-open'</default>
+    </key> 
+    
+    <key type="i" name="app-chooser-active-index">
+    	<default>0</default>
+    </key>
 
   </schema>
 </schemalist>

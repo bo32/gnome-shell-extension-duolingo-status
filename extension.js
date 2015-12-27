@@ -16,6 +16,7 @@ const FLAGS = Me.imports.flagsKeys.flags;
 const Utils = Me.imports.utils;
 const Settings = Convenience.getSettings();
 const GLib = imports.gi.GLib;
+const GioSSS = Gio.SettingsSchemaSource;
 
 let icon_size = 16;
 let menu_width = 250;
@@ -27,6 +28,7 @@ const DuolingoMenuButton = new Lang.Class({
     Extends: PanelMenu.Button,
 
 	_init: function() {
+//		let schemaSource = GioSSS.new_from_directory(Me.path + "/schemas", GioSSS.get_default(), false);
         this.parent(0.0, 'duolingo');
         
 		this.duolingo = new Duolingo(Settings.get_string('username'));
@@ -94,7 +96,8 @@ const DuolingoMenuButton = new Lang.Class({
 		link_label.style += 'font-weight: bold;'
 		link_menu.actor.add(link_label, { expand: true });
 		link_menu.connect('activate', function() {
-			Util.spawn(['xdg-open', 'http://duolingo.com']);
+			//Util.spawn(['xdg-open', 'http://duolingo.com']);
+			Util.spawn([Settings.get_string('opening-browser-command'), 'http://duolingo.com']);
 		});
 		
 		/* refresh button */
