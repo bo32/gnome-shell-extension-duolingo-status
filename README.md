@@ -2,7 +2,8 @@
 
 ###DESCRIPTION
 
-Display useful information about your Duolingo account, and offers a direct link to the website.
+Easy way to remember to do your Duolingo, by displaying a red owl icon in your top bar. The red color or the icon itself goes off once your daily goal is reached.  
+Useful information about your Duolingo account, and a shortcut to the website are also at your disposition.
 
 ###SCREENSHOT
 
@@ -26,3 +27,4 @@ Thanks to IconFinder for finding my icons.
 2015/11/22: option allowing changing the icon color when the daily goal is reached.  
 2015/11/26: add new Klingon, Catalan, Czech, Swahili and Welsh flags.  
 2015/12/05: option allowing changing the icon color when the daily goal is not reached.  
+2015/12/27: option allowing changing the browser you want to open Duolingo with, via the shortcut in the extension.  
