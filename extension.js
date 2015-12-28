@@ -99,10 +99,26 @@ const DuolingoMenuButton = new Lang.Class({
 		});
 		
 		/* refresh button */
-		let refresh_icon = new St.Icon({ icon_name: 'view-refresh-symbolic', style_class: 'system-actions-icon', icon_size: icon_size });
+		let refresh_icon = new St.Icon({
+			icon_name: 'view-refresh-symbolic', 
+			style_class: 'system-actions-icon', 
+			icon_size: icon_size
+		});
 		let refresh_button = new St.Button({child: refresh_icon});
 		refresh_button.connect('clicked', this._refresh);
 		link_menu.actor.add(refresh_button, {expand: false});
+		
+		/* Preferences button */
+		let preferences_icon = new St.Icon({ 
+			icon_name: 'system-run-symbolic', 
+			style_class: 'system-actions-icon', 
+			icon_size: icon_size
+		});
+		let preferences_button = new St.Button({child: preferences_icon});
+		preferences_button.connect('clicked', Lang.bind(this, function() {
+			launch_extension_prefs(Me.uuid);
+		}));
+		link_menu.actor.add(preferences_button, {expand: false});
 		
 		this.menu.addMenuItem(link_menu);
 	},
@@ -180,6 +196,17 @@ const LanguageSubMenu = new Lang.Class({
 		this.menu.addMenuItem(menu_next_level);
 	},
 });
+
+function launch_extension_prefs(uuid) {
+    let appSys = Shell.AppSystem.get_default();
+    let app = appSys.lookup_app('gnome-shell-extension-prefs.desktop');
+    let info = app.get_app_info();
+    let timestamp = global.display.get_current_time_roundtrip();
+    info.launch_uris(
+        ['extension:///' + uuid],
+        global.create_app_launch_context(timestamp, -1)
+    );
+}
 
 function init() {
 }
