@@ -10,6 +10,7 @@ flags["German"] = "Germany-flag.png";
 flags["Hebrew"] = "Israel-flag.png";
 flags["Hindi"] = "India-flag.png";
 flags["Hungarian"] = "Hungary-flag.png";
+flags["Indonesian"] = "Indonesia-flag.png";
 flags["Irish"] = "Ireland-flag.png";
 flags["Italian"] = "Italy-flag.png";
 flags["Klingon"] = "Klingon-flag.png";
