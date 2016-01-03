@@ -68,7 +68,6 @@ DuolingoStatusSettingsWidget.prototype = {
 		});
 		hide_icon_switch.connect('notify::active', function() {
 			Settings.set_boolean('hide-when-daily-goal-reached', hide_icon_switch.active);
-			enable_change_icon_color_label_switch.set_sensitive(!hide_icon_switch.active);
 		});
 		this._grid.attach(hide_icon_switch, 2, 1, 1, 1);
 		
@@ -82,7 +81,6 @@ DuolingoStatusSettingsWidget.prototype = {
 		
 		let enable_change_icon_color_label_switch = new Gtk.Switch({
 			active: Settings.get_boolean('change-icon-color-when-daily-goal-reached'),
-			sensitive: !hide_icon_switch.active,
 			halign: Gtk.Align.END
 		});
 		enable_change_icon_color_label_switch.connect('notify::active', function() {
