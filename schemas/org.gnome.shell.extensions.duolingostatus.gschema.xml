@@ -6,34 +6,42 @@
 	<key type="s" name="username">
         <default>''</default>
     </key>
-    
+
     <key type="b" name="hide-when-daily-goal-reached">
     	<default>false</default>
     </key>
-    
+
     <key type="b" name="change-icon-color-when-daily-goal-reached">
     	<default>false</default>
-    </key> 
-    
+    </key>
+
     <key type="s" name="icon-color-when-daily-goal-reached">
     	<default>'rgb(138,226,52)'</default>
     </key>
-    
+
     <key type="s" name="icon-color-when-daily-goal-not-reached">
     	<default>'rgb(255,0,0)'</default>
     </key>
-    
+
     <key type="b" name="use-default-browser">
     	<default>true</default>
-    </key> 
-    
+    </key>
+
     <key type="s" name="opening-browser-command">
     	<default>'xdg-open'</default>
-    </key> 
-    
+    </key>
+
     <key type="i" name="app-chooser-active-index">
     	<default>0</default>
     </key>
+
+    <!--<key type="b" name="is-reminder-set">
+    	<default>false</default>
+    </key>
+
+    <key type="b" name="reminder-time">
+    	<default>23:00</default>
+    </key>-->
 
   </schema>
 </schemalist>

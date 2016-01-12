@@ -5,7 +5,6 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const TimeZone = imports.gi.GLib.TimeZone;
 const DateTime = imports.gi.GLib.DateTime;
-const Thread = imports.gi.GLib.Thread;
 const Mainloop = imports.mainloop;
 
 const Duolingo = new Lang.Class({
@@ -16,7 +15,7 @@ const Duolingo = new Lang.Class({
 		this.raw_data = null;
 		this.timeouts = 3;
 	},
-	
+
 	/* Calls the server and saves the answer in the property raw_data.
 	If the user is not found, displays a notification, and the menu is not built.
 	If an error different than 200 is returned, displays a notification, and the menu is not built. */
@@ -24,8 +23,8 @@ const Duolingo = new Lang.Class({
 		if (!this.login) {
 			callback( "Please enter a username in the settings.");
 			return;
-		}		
-		
+		}
+
 		let url = 'https://duolingo.com/users/' + this.login;
 		let request = Soup.Message.new('GET', url);
 		let session = new Soup.SessionSync();
@@ -50,7 +49,7 @@ const Duolingo = new Lang.Class({
 			}
 		}));
 	},
-	
+
 	/* Returns today's timestamp at midnight, relative to your time zone. */
 	get_duolingos_daystart : function() {
 		let tz = TimeZone.new_local();
@@ -75,12 +74,12 @@ const Duolingo = new Lang.Class({
 		}
 		return sum;
 	},
-	
+
 	get_daily_goal: function() {
 		return this.raw_data.daily_goal;
 	},
 
-	/** Returns an Array of the learnt languages by the given profile. The current language is in first position. 
+	/** Returns an Array of the learnt languages by the given profile. The current language is in first position.
 	Each element of the returned array contains the followinf keys: 'label', 'level', 'points', 'to_next_level'. */
 	get_languages: function(callback) {
 		let languages = this.raw_data.languages;
@@ -94,7 +93,7 @@ const Duolingo = new Lang.Class({
 				language['level'] = languages[l].level;
 				language['points'] = languages[l].points;
 				language['to_next_level'] = languages[l].to_next_level;
-			
+
 				/* add the current language in the final list */
 				if (Boolean(languages[l].current_learning)) {
 					let tmp = [language];
@@ -106,17 +105,16 @@ const Duolingo = new Lang.Class({
 		}
 		return learnt_languages;
 	},
-	
+
 	get_lingots: function() {
 		return this.raw_data.rupees;
 	},
-	
+
 	get_streak: function() {
 		return this.raw_data.site_streak;
 	},
-	
+
 	is_daily_goal_reached: function() {
 		return this.get_improvement() >= this.get_daily_goal();
 	},
-});	
-
+});
