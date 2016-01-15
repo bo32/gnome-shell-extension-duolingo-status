@@ -31,3 +31,4 @@ Thanks to IconFinder for finding my icons.
 2015/12/27: if the connection fails, the program tries to reach the server 2 other times.  
 2015/12/28: Indonesian added. Displays a settings button in the top row.  
 2016/01/03: Greek added.  
+2016/01/15: Reminder functionality available in the options.  
