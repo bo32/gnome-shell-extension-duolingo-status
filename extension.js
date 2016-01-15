@@ -9,16 +9,15 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Gio = imports.gi.Gio;
 const Clutter = imports.gi.Clutter;
 const Me = ExtensionUtils.getCurrentExtension();
+
 const Convenience = Me.imports.convenience;
 const Duolingo = Me.imports.duolingo.Duolingo;
+const Reminder = Me.imports.reminder.Reminder;
+
 const Util = imports.misc.util;
 const FLAGS = Me.imports.flagsKeys.flags;
 const Utils = Me.imports.utils;
 const Settings = Convenience.getSettings();
-const GLib = imports.gi.GLib;
-const TimeZone = imports.gi.GLib.TimeZone;
-const DateTime = imports.gi.GLib.DateTime;
-const Mainloop = imports.mainloop;
 
 let icon_size = 16;
 let menu_width = 250;
@@ -31,24 +30,12 @@ const DuolingoMenuButton = new Lang.Class({
 
 	_init: function() {
         this.parent(0.0, 'duolingo');
-        // let tz = TimeZone.new_local();
-		// let now = DateTime.new_now(tz);
-        // global.log(now.get_hour() + ':' + now.get_minute() + ':' + now.get_second());
-        // let now_time = now.get_hour() * 3600 + now.get_minute() * 60 + now.get_second();
-        // let alarm_time = 23 * 3600 + 48 * 60 + 59;
-        // global.log(now_time);
-        // global.log(alarm_time - now_time);
-        // let delay = alarm_time - now_time;
-        // if (delay < 0) {
-        //     delay =
-        // }
-        // Mainloop.timeout_add((alarm_time - now_time) * 1000, Lang.bind(this, function() {
-        //     Main.notify('blabla', 'blabal');
-        // }));
-
 
 		this.duolingo = new Duolingo(Settings.get_string('username'));
 		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
+
+        let reminder = new Reminder(this.duolingo);
+        reminder.start();
 	},
 
 	_create_menus: function(error) {

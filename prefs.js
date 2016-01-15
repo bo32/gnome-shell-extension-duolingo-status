@@ -13,7 +13,6 @@ DuolingoStatusSettingsWidget.prototype = {
 
 
 	_init: function() {
-
 		this.vbox = new Gtk.Box({
 			orientation: Gtk.Orientation.VERTICAL,
 			spacing: 6
@@ -141,12 +140,12 @@ DuolingoStatusSettingsWidget.prototype = {
         	label: 'Default browser',
         	halign: Gtk.Align.START
         });
-		_default_browser_switch = new Gtk.Switch({
+		this._default_browser_switch = new Gtk.Switch({
 			active: Settings.get_boolean('use-default-browser'),
 			halign: Gtk.Align.END
 		});
 		this._grid.attach(default_browser_label, 0, 0, 1, 1);
-		this._grid.attach(_default_browser_switch, 1, 0, 3, 1);
+		this._grid.attach(this._default_browser_switch, 1, 0, 3, 1);
 
         /* Custom browser */
 		let custom_browser_label = new Gtk.Label({
@@ -154,7 +153,7 @@ DuolingoStatusSettingsWidget.prototype = {
 			halign: Gtk.Align.START,
 			sensitive: !Settings.get_boolean('use-default-browser')
 		});
-		_custom_browser_field = new Gtk.Entry({
+		this._custom_browser_field = new Gtk.Entry({
 			hexpand: true,
 			halign: Gtk.Align.FILL,
 			sensitive: !Settings.get_boolean('use-default-browser')
@@ -163,28 +162,28 @@ DuolingoStatusSettingsWidget.prototype = {
 			content_type:"text/html",
 			sensitive: !Settings.get_boolean('use-default-browser')
 		});
-		app_chooser_button.set_show_dialog_item(true)
+		app_chooser_button.set_show_dialog_item(true);
 		app_chooser_button.set_active(Settings.get_int('app-chooser-active-index'));
 		this._grid.attach(custom_browser_label, 0, 1, 1, 1);
-		this._grid.attach(_custom_browser_field, 1, 1, 2, 1);
+		this._grid.attach(this._custom_browser_field, 1, 1, 2, 1);
 		this._grid.attach(app_chooser_button, 3, 1, 1, 1);
 
 		/* if the default browser is set, we initialize the command line field with the command of the app selected in the app chooser button.	Otherwise, we give it the stored value */
 		if(!Settings.get_boolean('use-default-browser')) {
-			_custom_browser_field.text = Settings.get_string('opening-browser-command');
+			this._custom_browser_field.text = Settings.get_string('opening-browser-command');
 		} else {
-			_custom_browser_field.text = this._clean_up_commandline(app_chooser_button.get_app_info().get_commandline());
+			this._custom_browser_field.text = this._clean_up_commandline(app_chooser_button.get_app_info().get_commandline());
 		}
 
-		_default_browser_switch.connect('notify::active', function() {
-			Settings.set_boolean('use-default-browser', _default_browser_switch.active);
-			custom_browser_label.set_sensitive(!_default_browser_switch.active);
-			_custom_browser_field.set_sensitive(!_default_browser_switch.active);
-			app_chooser_button.set_sensitive(!_default_browser_switch.active);
+		this._default_browser_switch.connect('notify::active', function() {
+			Settings.set_boolean('use-default-browser', this._default_browser_switch.active);
+			custom_browser_label.set_sensitive(!this._default_browser_switch.active);
+			this._custom_browser_field.set_sensitive(!this._default_browser_switch.active);
+			app_chooser_button.set_sensitive(!this._default_browser_switch.active);
 		});
 
 		app_chooser_button.connect('changed', function(app_chooser_button) {
-			_custom_browser_field.text = DuolingoStatusSettingsWidget.prototype._clean_up_commandline(app_chooser_button.get_app_info().get_commandline());
+			this._custom_browser_field.text = DuolingoStatusSettingsWidget.prototype._clean_up_commandline(app_chooser_button.get_app_info().get_commandline());
 			Settings.set_int('app-chooser-active-index', app_chooser_button.active);
 		});
 
@@ -192,8 +191,10 @@ DuolingoStatusSettingsWidget.prototype = {
 
 
 		/***************************************
-			Notification section
+			Reminder section
 		***************************************/
+
+		this.is_reminder_info_displayed = false;
 
 		this._grid = new Gtk.Grid({
 			orientation: Gtk.Orientation.VERTICAL,
@@ -207,22 +208,62 @@ DuolingoStatusSettingsWidget.prototype = {
    		this._grid.attach(activate_alarm_label, 0, 0, 1, 1);
 
    		let activate_alarm_switch = new Gtk.Switch({
-        	active: true
+        	active: Settings.get_boolean('is-reminder')
         });
+		activate_alarm_switch.connect('notify::active', Lang.bind(this, function() {
+			Settings.set_boolean('is-reminder', activate_alarm_switch.active);
+			this.notification_time_hour_field.set_sensitive(activate_alarm_switch.active);
+			this.notification_time_minute_field.set_sensitive(activate_alarm_switch.active);
+			this.inform_to_restart_gnome_shell('reminder');
+		}));
    		this._grid.attach(activate_alarm_switch, 1, 0, 1, 1);
 
-		let notifcation_time_hour_field = new Gtk.Entry({
-			width_chars: 2
+		let adjustment_hours = new Gtk.Adjustment({
+			value: this.get_hour_of_notification_time(),
+			upper: 23,
+			lower: 0,
+			step_increment: 1
 		});
-		let notifcation_time_minute_field = new Gtk.Entry({
-			width_chars: 2
+
+		this.notification_time_hour_field = new Gtk.SpinButton({
+			max_length: 2,
+			numeric: true,
+			sensitive: activate_alarm_switch.active
 		});
-		this._grid.attach(notifcation_time_hour_field, 2, 0, 1, 1);
-		this._grid.attach(notifcation_time_minute_field, 3, 0, 1, 1);
+		this.notification_time_hour_field.adjustment = adjustment_hours;
+		this.notification_time_hour_field.connect('value_changed', Lang.bind(this, function() {
+			Settings.set_string('notification-time', this.get_notification_time());
+			this.inform_to_restart_gnome_shell('reminder');
+		}));
 
-		//let notification = new Notify.Notification({app_name: 'duolingo'});
+		let adjustment_mintues = new Gtk.Adjustment({
+			value: this.get_minute_of_notification_time(),
+			upper: 59,
+			lower: 0,
+			step_increment: 1
+		});
+		this.notification_time_minute_field = new Gtk.SpinButton({
+			max_length: 2,
+			numeric: true,
+			sensitive: activate_alarm_switch.active
+		});
+		this.notification_time_minute_field.set_value(this.get_minute_of_notification_time());
+		this.notification_time_minute_field.adjustment = adjustment_mintues;
+		this.notification_time_minute_field.connect('value_changed', Lang.bind(this, function() {
+			Settings.set_string('notification-time', this.get_notification_time());
+			this.inform_to_restart_gnome_shell('reminder');
+		}));
 
-		stack.add_titled(this._grid, "notification", "Notification");
+		this._grid.attach(this.notification_time_hour_field, 2, 0, 1, 1);
+		this._grid.attach(new Gtk.Label({label: ':'}), 3, 0, 1, 1);
+		this._grid.attach(this.notification_time_minute_field, 4, 0, 1, 1);
+
+		this.info_reminder = new Gtk.Label({
+			label: ''
+		});
+		this._grid.attach(this.info_reminder, 0, 2, 5, 1);
+
+		stack.add_titled(this._grid, "reminder", "Reminder");
 
 		this.vbox.pack_start(stack_switcher, false, true, 0);
 		this.vbox.pack_start(stack, true, true, 0);
@@ -230,6 +271,30 @@ DuolingoStatusSettingsWidget.prototype = {
 		return;
 	},
 
+	get_notification_time: function() {
+		return this.notification_time_hour_field.value + ':' + this.notification_time_minute_field.value;
+	},
+
+	get_hour_of_notification_time: function() {
+		return Settings.get_string('notification-time').split(':')[0];
+	},
+
+	get_minute_of_notification_time: function() {
+		return Settings.get_string('notification-time').split(':')[1];
+	},
+
+	inform_to_restart_gnome_shell: function(stack_label) {
+		switch (stack_label) {
+			case 'reminder':
+				if (this.info_reminder.label == '') {
+					this.info_reminder.label = 'Restart gnome-shell (Alt + F2, then enter \'r\') to apply the reminder changes.';
+				}
+				break;
+			default:
+
+		}
+
+	},
 
 	_completePrefsWidget: function() {
         let scrollingWindow = new Gtk.ScrolledWindow({
@@ -240,15 +305,15 @@ DuolingoStatusSettingsWidget.prototype = {
         scrollingWindow.width_request = 400;
         scrollingWindow.show_all();
 		scrollingWindow.unparent();
-		scrollingWindow.connect('destroy', function() {
+		scrollingWindow.connect('destroy', Lang.bind(this, function() {
 			Settings.set_string('username', username_field.text);
-			if(!_default_browser_switch.active && _custom_browser_field.text != '') {
-				Settings.set_string('opening-browser-command', _custom_browser_field.text);
+			if(!this._default_browser_switch.active && this._custom_browser_field.text != '') {
+				Settings.set_string('opening-browser-command', this._custom_browser_field.text);
 			} else {
 				Settings.set_string('opening-browser-command', 'xdg-open');
 				Settings.set_boolean('use-default-browser', true);
 			}
-		});
+		}));
         return scrollingWindow;
     },
 
