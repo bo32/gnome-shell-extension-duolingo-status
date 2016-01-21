@@ -14,6 +14,7 @@ const Reminder = new Lang.Class({
 
 	_init: function(duolingo) {
         this.duolingo = duolingo;
+		this.timer_ids = [];
 	},
 
     start: function() {
@@ -30,7 +31,7 @@ const Reminder = new Lang.Class({
                 // notification if for tomorrow
                 delay = 24 * 3600 + delay;
             }
-            Mainloop.timeout_add((delay) * 1000, Lang.bind(this, function() {
+            let timer_id = Mainloop.timeout_add((delay) * 1000, Lang.bind(this, function() {
                 if (!this.duolingo.is_daily_goal_reached()) {
                     Main.notify('Duolingo', 'Time to do Duolingo !');
                 }
@@ -38,11 +39,18 @@ const Reminder = new Lang.Class({
                     this.start();
                 }));
             }));
+			this.timer_ids.push(timer_id);
+			global.log("new timer:" + timer_id);
             //Main.notify('Duolingo', 'Reminder set for ' + Settings.get_string('notification-time') + '.');
         }
     },
 
     stop: function() {
-        Mainloop.quit();
+		global.log("cleaning timers");
+		for(var timer_id in this.timer_ids) {
+        	Mainloop.timeout_remove(timer_id);
+			global.log("timer " + timer_id + " removed.");
+			this.timer_ids.pop(timer_id);
+		}
     }
 });

@@ -33,12 +33,14 @@ const DuolingoMenuButton = new Lang.Class({
 
 		this.duolingo = new Duolingo(Settings.get_string('username'));
 		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
-
-        let reminder = new Reminder(this.duolingo);
-        reminder.start();
 	},
 
 	_create_menus: function(error) {
+        let this.reminder = new Reminder(this.duolingo);
+        if (!this.duolingo.is_daily_goal_reached()) {
+            this.reminder.start();
+        }
+
 		if (Settings.get_boolean('hide-when-daily-goal-reached') && this.duolingo.is_daily_goal_reached()) {
 			this.destroy();
 			return;
@@ -130,6 +132,7 @@ const DuolingoMenuButton = new Lang.Class({
 	},
 
 	_refresh: function() {
+        this.reminder.stop();
 		disable();
 		enable();
 	},
@@ -155,13 +158,9 @@ const DuolingoMenuButton = new Lang.Class({
 	},
 
 	_set_todays_improvement: function(improvement, daily_goal) {
-		this.today_improvement = improvement;
-		this.daily_goal = daily_goal;
 		this.todays_improvement.text = improvement + ' / ' + daily_goal + ' XP';
 
-		let is_daily_goal_reached = improvement >= daily_goal;
-
-		if (!is_daily_goal_reached) {
+		if (!this.duolingo.is_daily_goal_reached()) {
 			this.hbox.get_child_at_index(0).style = 'color: ' + Settings.get_string('icon-color-when-daily-goal-not-reached') +';'
 		} else {
 			if(Settings.get_boolean('change-icon-color-when-daily-goal-reached')) {
