@@ -117,4 +117,9 @@ const Duolingo = new Lang.Class({
 	is_daily_goal_reached: function() {
 		return this.get_improvement() >= this.get_daily_goal();
 	},
+
+	// TODO needs to be tested
+	get_account_creation_date: function() {
+		return this.raw_data.creation_date_new;
+	},
 });

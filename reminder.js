@@ -41,16 +41,18 @@ const Reminder = new Lang.Class({
             }));
 			this.timer_ids.push(timer_id);
 			global.log("new timer:" + timer_id);
+			global.log(this.timer_ids.length + " timers");
             //Main.notify('Duolingo', 'Reminder set for ' + Settings.get_string('notification-time') + '.');
         }
     },
 
     stop: function() {
-		global.log("cleaning timers");
+		global.log("cleaning " + this.timer_ids.length + " timers");
 		for(var timer_id in this.timer_ids) {
-        	Mainloop.timeout_remove(timer_id);
+        	Mainloop.source_remove(timer_id);
 			global.log("timer " + timer_id + " removed.");
 			this.timer_ids.pop(timer_id);
 		}
+		global.log(this.timer_ids.length + " timers stopped");
     }
 });

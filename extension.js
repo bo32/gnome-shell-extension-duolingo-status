@@ -36,7 +36,7 @@ const DuolingoMenuButton = new Lang.Class({
 	},
 
 	_create_menus: function(error) {
-        let this.reminder = new Reminder(this.duolingo);
+        this.reminder = new Reminder(this.duolingo);
         if (!this.duolingo.is_daily_goal_reached()) {
             this.reminder.start();
         }
@@ -113,7 +113,7 @@ const DuolingoMenuButton = new Lang.Class({
 			icon_size: icon_size
 		});
 		let refresh_button = new St.Button({child: refresh_icon});
-		refresh_button.connect('clicked', this._refresh);
+		refresh_button.connect('clicked', Lang.bind(this, this._refresh));
 		link_menu.actor.add(refresh_button, {expand: false});
 
 		/* Preferences button */
@@ -154,7 +154,7 @@ const DuolingoMenuButton = new Lang.Class({
 	},
 
 	_open_lingots_link: function() {
-		Util.spawn(['xdg-open', 'http://duolingo.com/show_store']);
+        Util.spawn([Settings.get_string('opening-browser-command'), 'http://duolingo.com/show_store']);
 	},
 
 	_set_todays_improvement: function(improvement, daily_goal) {
