@@ -13,6 +13,7 @@ const Reminder = new Lang.Class({
 	Name: 'Reminder',
 
 	_init: function(duolingo) {
+		global.log('reminder initiated')
         this.duolingo = duolingo;
 		this.timer_ids = [];
 	},

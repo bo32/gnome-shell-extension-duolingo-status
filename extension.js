@@ -30,16 +30,12 @@ const DuolingoMenuButton = new Lang.Class({
 
 	_init: function() {
         this.parent(0.0, 'duolingo');
-
+        this.reminder = null;
 		this.duolingo = new Duolingo(Settings.get_string('username'));
 		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
 	},
 
 	_create_menus: function(error) {
-        this.reminder = new Reminder(this.duolingo);
-        if (!this.duolingo.is_daily_goal_reached()) {
-            this.reminder.start();
-        }
 
 		if (Settings.get_boolean('hide-when-daily-goal-reached') && this.duolingo.is_daily_goal_reached()) {
 			this.destroy();
@@ -82,6 +78,9 @@ const DuolingoMenuButton = new Lang.Class({
 
 		let lingots = this.duolingo.get_lingots();
 		this._display_lingots(lingots);
+
+        // initiate reminder
+        this._initiate_reminder();
 	},
 
 	_init_icon: function(path) {
@@ -136,6 +135,13 @@ const DuolingoMenuButton = new Lang.Class({
 		disable();
 		enable();
 	},
+
+    _initiate_reminder: function() {
+        this.reminder = new Reminder(this.duolingo);
+        if (this.duolingo.is_daily_goal_reached()) {
+            this.reminder.start();
+        }
+    },
 
 	_add_language_menus: function(languages) {
 		for (let l in languages) {

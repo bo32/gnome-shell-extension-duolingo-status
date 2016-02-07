@@ -203,7 +203,7 @@ DuolingoStatusSettingsWidget.prototype = {
         });
 
         let activate_alarm_label = new Gtk.Label({
-        	label: 'Activate notification'
+        	label: 'Activate notification (experimental)'
         });
    		this._grid.attach(activate_alarm_label, 0, 0, 1, 1);
 
