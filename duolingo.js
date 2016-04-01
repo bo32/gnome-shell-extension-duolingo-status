@@ -118,6 +118,33 @@ const Duolingo = new Lang.Class({
 		return this.get_improvement() >= this.get_daily_goal();
 	},
 
+	is_frozen: function() {
+
+	},
+
+	// TODO needs to be implemented
+	get_completed_chapters: function() {
+
+	},
+
+	// TODO needs to be implemented
+	get_locked_chapters: function() {
+		let results = new Array();
+		let skills = this.raw_data.language_data.da.skills;
+		for (let skill in skills) {
+			global.log(skill);
+			global.log(skill['short'] + " - " + skill['locked']);
+			if (skill.locked) {
+				results.push(skill);
+			}
+		}
+		return results;
+	},
+
+	get_count_locked_chapters: function() {
+		return this.get_locked_chapters().length;
+	},
+
 	// TODO needs to be tested
 	get_account_creation_date: function() {
 		return this.raw_data.creation_date_new;

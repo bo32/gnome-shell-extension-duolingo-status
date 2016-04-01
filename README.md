@@ -32,3 +32,4 @@ Thanks to IconFinder for finding my icons.
 2015/12/28: Indonesian added. Displays a settings button in the top row.  
 2016/01/03: Greek added.  
 2016/01/15: Reminder functionality available in the options.  
+2016/04/02: update gnome-shell 3.20 + Reminder fixed + Korean available.  
