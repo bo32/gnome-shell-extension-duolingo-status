@@ -138,7 +138,7 @@ const DuolingoMenuButton = new Lang.Class({
 
     _initiate_reminder: function() {
         this.reminder = new Reminder(this.duolingo);
-        if (this.duolingo.is_daily_goal_reached()) {
+        if (!this.duolingo.is_daily_goal_reached()) {
             this.reminder.start();
         }
     },

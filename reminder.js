@@ -19,12 +19,14 @@ const Reminder = new Lang.Class({
 	},
 
     start: function() {
+		global.log("start reminder: " + Settings.get_boolean('is-reminder'));
         if (Settings.get_boolean('is-reminder')) {
+
             let tz = TimeZone.new_local();
     		let now = DateTime.new_now(tz);
             let now_time = now.get_hour() * 3600 + now.get_minute() * 60 + now.get_second();
             let notification_time = Settings.get_string('notification-time').split(':');
-            let hours = notification_time[0] == 0 ? 24 : notification_time[0];
+            let hours = notification_time[0];
             let minutes = notification_time[1];
             let alarm_time = hours * 3600 + minutes * 60;
             let delay = alarm_time - now_time;
