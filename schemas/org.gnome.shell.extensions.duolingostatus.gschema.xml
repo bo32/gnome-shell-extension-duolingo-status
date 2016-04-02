@@ -43,5 +43,9 @@
     	<default>'23:00'</default>
     </key>
 
+    <key type="b" name="show-icon-in-notification-tray">
+    	<default>false</default>
+    </key>
+
   </schema>
 </schemalist>
