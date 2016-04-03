@@ -90,6 +90,7 @@ const Duolingo = new Lang.Class({
 				/* save the language and the related information in a cell */
 				let language = new Array();
 				language['label'] = languages[l].language_string;
+				language['code'] = languages[l].language;
 				language['level'] = languages[l].level;
 				language['points'] = languages[l].points;
 				language['to_next_level'] = languages[l].to_next_level;
@@ -105,6 +106,16 @@ const Duolingo = new Lang.Class({
 			}
 		}
 		return learnt_languages;
+	},
+
+	get_current_learning_language: function() {
+		let languages = this.get_languages();
+		for (let l in languages) {
+			if(languages[l]['current_learning']) {
+				return languages[l];
+			}
+		}
+		return null;
 	},
 
 	get_lingots: function() {
@@ -125,7 +136,8 @@ const Duolingo = new Lang.Class({
 
 	get_learned_chapters: function() {
 		let results = new Array();
-		let skills = this.raw_data.language_data.da.skills;
+		let current_language =  this.get_current_learning_language()['code'];
+		let skills = this.raw_data.language_data[current_language].skills;
 		for (let s in skills) {
 			// global.log(s + ": " + skills[s].short + " - " + skills[s].learned);
 			if (skills[s].learned) {
@@ -140,6 +152,7 @@ const Duolingo = new Lang.Class({
 	},
 
 	get_count_available_chapters: function() {
-		return this.raw_data.language_data.da.skills.length;
+		let current_language =  this.get_current_learning_language()['code'];
+		return this.raw_data.language_data[current_language].skills.length;
 	},
 });
