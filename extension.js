@@ -145,7 +145,7 @@ const DuolingoMenuButton = new Lang.Class({
 
 	_add_language_menus: function(languages) {
 		for (let l in languages) {
-			let m = new LanguageSubMenu(languages[l]);
+			let m = new LanguageSubMenu(this.duolingo, languages[l]);
 			this.menu.addMenuItem(m);
 		}
 	},
@@ -184,7 +184,7 @@ const LanguageSubMenu = new Lang.Class({
     Name: 'Duolingo.LanguageMenu',
     Extends: PopupMenu.PopupSubMenuMenuItem,
 
-	_init: function(language) {
+	_init: function(duolingo, language) {
 		this.parent(language['label'], true);
 
 		/* display the flag */
@@ -205,6 +205,15 @@ const LanguageSubMenu = new Lang.Class({
 		menu_next_level.actor.add(new St.Label({text: 'Next level in', x_expand: true}));
 		menu_next_level.actor.add(new St.Label({text: Utils.formatThousandNumber(language['to_next_level'].toString()) + ' XP'}));
 		this.menu.addMenuItem(menu_next_level);
+
+        /* Add the menu displaying the completion of the language learning */
+        if (language['current_learning']) {
+    		let menu_learning_completion = new PopupMenu.PopupBaseMenuItem();
+    		menu_learning_completion.actor.add(new St.Label({text: 'Completion', x_expand: true}));
+            let completion = duolingo.get_count_learned_chapters() + ' / ' + duolingo.get_count_available_chapters();
+    		menu_learning_completion.actor.add(new St.Label({text: completion}));
+    		this.menu.addMenuItem(menu_learning_completion);
+        }
 	},
 });
 

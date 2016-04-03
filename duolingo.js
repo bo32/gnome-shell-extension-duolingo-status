@@ -93,6 +93,7 @@ const Duolingo = new Lang.Class({
 				language['level'] = languages[l].level;
 				language['points'] = languages[l].points;
 				language['to_next_level'] = languages[l].to_next_level;
+				language['current_learning'] = languages[l].current_learning;
 
 				/* add the current language in the final list */
 				if (Boolean(languages[l].current_learning)) {

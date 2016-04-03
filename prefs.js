@@ -122,6 +122,21 @@ DuolingoStatusSettingsWidget.prototype = {
 		});
 		this._grid.attach(color_picker_button_not_reached, 3, 3, 1, 1);
 
+		let enable_tray_icon_label = new Gtk.Label({
+			label: 'Display icon in the icon tray',
+			hexpand: true,
+			halign: Gtk.Align.START
+		});
+		this._grid.attach(enable_tray_icon_label, 0, 4, 3, 1);
+		let enable_tray_icon_switch = new Gtk.Switch ({
+			active: Settings.get_boolean('show-icon-in-notification-tray'),
+			halign: Gtk.Align.END
+		});
+		this._grid.attach(enable_tray_icon_switch, 2, 4, 1, 1);
+		enable_tray_icon_switch.connect('notify::active', function() {
+			Settings.set_boolean('show-icon-in-notification-tray', enable_tray_icon_switch.active);
+		});
+
 		stack.add_titled(this._grid, "main", "Main");
 
 
