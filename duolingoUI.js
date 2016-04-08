@@ -82,6 +82,8 @@ const DuolingoMenuButton = new Lang.Class({
         // initiate reminder
         this._initiate_reminder();
 
+        this._display_in_original_tray_icon();
+
         this.emit('ready');
 	},
 
@@ -136,12 +138,6 @@ const DuolingoMenuButton = new Lang.Class({
         return this.refresh_button;
     },
 
-	_refresh: function() {
-        this.reminder.stop();
-		this.destroy();
-		// enable();
-	},
-
     _initiate_reminder: function() {
         this.reminder = new Reminder(this.duolingo);
         if (!this.duolingo.is_daily_goal_reached()) {
@@ -184,20 +180,21 @@ const DuolingoMenuButton = new Lang.Class({
     _display_in_original_tray_icon: function() {
         let tray = Main.legacyTray;
         let children = tray._iconBox.get_n_children();
-        // for(let i = 0; i < children; i++) {
-        //     let button = tray._iconBox.get_child_at_index(0);
-        //     this._onTrayIconAddedRemoveOriginalIcon(Main.legacyTray._trayManager, button.child);
-        // }
+        for(let i = 0; i < children; i++) {
+            global.log(tray._iconBox.get_child_at_index(i));
+            let button = tray._iconBox.get_child_at_index(i);
+            this._onTrayIconAddedRemoveOriginalIcon(Main.legacyTray._trayManager, button.child);
+        }
     },
 
-    // _onTrayIconAddedRemoveOriginalIcon: function(object, icon) {
-    //     if(this._skypeHideOriginalTrayIcon && icon.wm_class == "Skype") {
-    //         let button = icon.get_parent();
-    //         if(button != null) {
-    //             button.destroy();
-    //         }
-    //     }
-    // },
+    _onTrayIconAddedRemoveOriginalIcon: function(object, icon) {
+        // if(Settings.get_boolean('change-icon-color-when-daily-goal-reached') && icon.wm_class == "Skype") {
+        //     let button = icon.get_parent();
+        //     if(button != null) {
+        //         button.destroy();
+        //     }
+        // }
+    },
 
     destroy: function() {
 		this.parent();
