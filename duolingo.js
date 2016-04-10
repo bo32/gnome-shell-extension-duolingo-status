@@ -134,6 +134,12 @@ const Duolingo = new Lang.Class({
 		return this.raw_data.inventory != null && this.raw_data.inventory.streak_freeze != null;
 	},
 
+	get_double_or_nothing_status: function() {
+		if (this.raw_data.inventory != null)
+			return this.raw_data.inventory.rupee_wager;
+		return null;
+	},
+
 	get_learned_chapters: function() {
 		let results = new Array();
 		let current_language =  this.get_current_learning_language()['code'];

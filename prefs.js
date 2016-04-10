@@ -123,7 +123,7 @@ DuolingoStatusSettingsWidget.prototype = {
 		this._grid.attach(color_picker_button_not_reached, 3, 3, 1, 1);
 
 		let enable_tray_icon_label = new Gtk.Label({
-			label: 'Display icon in the icon tray',
+			label: 'Display icon in the icon tray (not working yet)',
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
@@ -218,7 +218,7 @@ DuolingoStatusSettingsWidget.prototype = {
         });
 
         let activate_alarm_label = new Gtk.Label({
-        	label: 'Activate notification (experimental)'
+        	label: 'Enable notification'
         });
    		this._grid.attach(activate_alarm_label, 0, 0, 1, 1);
 

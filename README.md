@@ -33,3 +33,4 @@ Thanks to IconFinder for finding my icons.
 2016/01/03: Greek added.  
 2016/01/15: Reminder functionality available in the options.  
 2016/04/02: update gnome-shell 3.20 + Reminder fixed + Korean available.  
+2016/04/09: Completion of the current language added in the menu.

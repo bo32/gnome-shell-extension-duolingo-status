@@ -22,7 +22,6 @@ const Settings = Convenience.getSettings();
 let icon_size = 16;
 let menu_width = 250;
 let duolingo_green = '#78C800';
-let frozen_color = '#AFEEEE';
 let notification_label = 'Duolingo Status extension';
 
 const DuolingoMenuButton = new Lang.Class({
@@ -54,9 +53,6 @@ const DuolingoMenuButton = new Lang.Class({
 		this._init_icon(Me.path + "/icons/duolingo-symbolic.svg");
 		this._init_duolingo_menu();
 
-        /* Set the background color if the account has the forzen bonus */
-        // this.bg = frozen_color;
-
 		/* display profile menu */
 		this.todays_improvement = new St.Label({y_align: Clutter.ActorAlign.CENTER});
 		this.profile_menu = new PopupMenu.PopupBaseMenuItem();
@@ -80,11 +76,15 @@ const DuolingoMenuButton = new Lang.Class({
 		let languages = this.duolingo.get_languages();
 		this._add_language_menus(languages);
 
-		let lingots = this.duolingo.get_lingots();
-		this._display_lingots(lingots);
+		this._display_lingots();
+        this._display_double_or_nothing();
 
         // initiate reminder
         this._initiate_reminder();
+
+        this._display_in_original_tray_icon();
+
+        this.emit('ready');
 	},
 
 	_init_icon: function(path) {
@@ -105,7 +105,6 @@ const DuolingoMenuButton = new Lang.Class({
 		link_label.style += 'font-weight: bold;'
 		link_menu.actor.add(link_label, { expand: true });
 		link_menu.connect('activate', function() {
-			//Util.spawn(['xdg-open', 'http://duolingo.com']);
 			Util.spawn([Settings.get_string('opening-browser-command'), 'http://duolingo.com']);
 		});
 
@@ -115,9 +114,8 @@ const DuolingoMenuButton = new Lang.Class({
 			style_class: 'system-actions-icon',
 			icon_size: icon_size
 		});
-		let refresh_button = new St.Button({child: refresh_icon});
-		refresh_button.connect('clicked', Lang.bind(this, this._refresh));
-		link_menu.actor.add(refresh_button, {expand: false});
+		this.refresh_button = new St.Button({child: refresh_icon});
+		link_menu.actor.add(this.refresh_button, {expand: false});
 
 		/* Preferences button */
 		let preferences_icon = new St.Icon({
@@ -134,11 +132,9 @@ const DuolingoMenuButton = new Lang.Class({
 		this.menu.addMenuItem(link_menu);
 	},
 
-	_refresh: function() {
-        this.reminder.stop();
-		disable();
-		enable();
-	},
+    get_refresh_button: function() {
+        return this.refresh_button;
+    },
 
     _initiate_reminder: function() {
         this.reminder = new Reminder(this.duolingo);
@@ -149,18 +145,31 @@ const DuolingoMenuButton = new Lang.Class({
 
 	_add_language_menus: function(languages) {
 		for (let l in languages) {
-			let m = new LanguageSubMenu(this.duolingo, languages[l]);
+			let m = new LanguageSubMenu(languages[l]);
 			this.menu.addMenuItem(m);
 		}
 	},
 
-	_display_lingots: function(amount) {
+	_display_lingots: function() {
+        let lingots = this.duolingo.get_lingots();
 		let gicon = Gio.icon_new_for_string(Me.path + "/icons/ruby.png");
 		let lingots_icon = new St.Icon({gicon: gicon, icon_size: icon_size, y_align:Clutter.ActorAlign.CENTER});
 		this.profile_menu.actor.add(lingots_icon);
-		let lingots_label = new St.Label({y_align:Clutter.ActorAlign.CENTER, text: Utils.formatThousandNumber(amount.toString())});
+		let lingots_label = new St.Label({
+            y_align:Clutter.ActorAlign.CENTER,
+            text: Utils.formatThousandNumber(lingots.toString())});
 		this.profile_menu.actor.add(lingots_label);
 		this.profile_menu.connect('activate', this._open_lingots_link);
+	},
+
+    _display_double_or_nothing: function(amount) {
+        let double_or_nothing = this.duolingo.get_double_or_nothing_status();
+        if (double_or_nothing != null) {
+    		let double_or_nothing_label = new St.Label({
+                y_align:Clutter.ActorAlign.CENTER,
+                text: double_or_nothing + ' / 7'});
+    		this.profile_menu.actor.add(double_or_nothing_label);
+        }
 	},
 
 	_open_lingots_link: function() {
@@ -179,6 +188,25 @@ const DuolingoMenuButton = new Lang.Class({
 		}
 	},
 
+    _display_in_original_tray_icon: function() {
+        let tray = Main.legacyTray;
+        let children = tray._iconBox.get_n_children();
+        for(let i = 0; i < children; i++) {
+            global.log(tray._iconBox.get_child_at_index(i));
+            let button = tray._iconBox.get_child_at_index(i);
+            this._onTrayIconAddedRemoveOriginalIcon(Main.legacyTray._trayManager, button.child);
+        }
+    },
+
+    _onTrayIconAddedRemoveOriginalIcon: function(object, icon) {
+        // if(Settings.get_boolean('change-icon-color-when-daily-goal-reached') && icon.wm_class == "Skype") {
+        //     let button = icon.get_parent();
+        //     if(button != null) {
+        //         button.destroy();
+        //     }
+        // }
+    },
+
     destroy: function() {
 		this.parent();
     },
@@ -188,7 +216,7 @@ const LanguageSubMenu = new Lang.Class({
     Name: 'Duolingo.LanguageMenu',
     Extends: PopupMenu.PopupSubMenuMenuItem,
 
-	_init: function(duolingo, language) {
+	_init: function(language) {
 		this.parent(language['label'], true);
 
 		/* display the flag */
@@ -209,38 +237,29 @@ const LanguageSubMenu = new Lang.Class({
 		menu_next_level.actor.add(new St.Label({text: 'Next level in', x_expand: true}));
 		menu_next_level.actor.add(new St.Label({text: Utils.formatThousandNumber(language['to_next_level'].toString()) + ' XP'}));
 		this.menu.addMenuItem(menu_next_level);
-
-        /* Add the menu displaying the completion of the language learning */
-        if (language['current_learning']) {
-    		let menu_learning_completion = new PopupMenu.PopupBaseMenuItem();
-    		menu_learning_completion.actor.add(new St.Label({text: 'Completion', x_expand: true}));
-            let completion = duolingo.get_count_learned_chapters() + ' / ' + duolingo.get_count_available_chapters();
-    		menu_learning_completion.actor.add(new St.Label({text: completion}));
-    		this.menu.addMenuItem(menu_learning_completion);
-        }
 	},
 });
 
-function launch_extension_prefs(uuid) {
-    let appSys = Shell.AppSystem.get_default();
-    let app = appSys.lookup_app('gnome-shell-extension-prefs.desktop');
-    let info = app.get_app_info();
-    let timestamp = global.display.get_current_time_roundtrip();
-    info.launch_uris(
-        ['extension:///' + uuid],
-        global.create_app_launch_context(timestamp, -1)
-    );
-}
-
-function init() {
-}
-
-let menu;
-function enable() {
-    menu = new DuolingoMenuButton;
-    Main.panel.addToStatusArea('duolingo', menu);
-}
-
-function disable() {
-	menu.destroy();
-}
+// function launch_extension_prefs(uuid) {
+//     let appSys = Shell.AppSystem.get_default();
+//     let app = appSys.lookup_app('gnome-shell-extension-prefs.desktop');
+//     let info = app.get_app_info();
+//     let timestamp = global.display.get_current_time_roundtrip();
+//     info.launch_uris(
+//         ['extension:///' + uuid],
+//         global.create_app_launch_context(timestamp, -1)
+//     );
+// }
+//
+// function init() {
+// }
+//
+// let menu;
+// function enable() {
+//     menu = new DuolingoMenuButton;
+//     Main.panel.addToStatusArea('duolingo', menu);
+// }
+//
+// function disable() {
+// 	menu.destroy();
+// }
