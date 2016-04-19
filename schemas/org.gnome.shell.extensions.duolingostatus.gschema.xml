@@ -47,5 +47,17 @@
     	<default>false</default>
     </key>
 
+    <key type="b" name="show-lingots">
+    	<default>true</default>
+    </key>
+
+    <key type="b" name="show-double-or-nothing">
+    	<default>true</default>
+    </key>
+
+    <key type="b" name="show-frozen">
+    	<default>true</default>
+    </key>
+
   </schema>
 </schemalist>

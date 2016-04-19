@@ -13,13 +13,12 @@ const Reminder = new Lang.Class({
 	Name: 'Reminder',
 
 	_init: function(duolingo) {
-		global.log('reminder initiated')
         this.duolingo = duolingo;
 		this.timer_ids = [];
 	},
 
     start: function() {
-		global.log("start reminder: " + Settings.get_boolean('is-reminder'));
+		// global.log("start reminder: " + Settings.get_boolean('is-reminder'));
         if (Settings.get_boolean('is-reminder')) {
 
             let tz = TimeZone.new_local();
@@ -43,19 +42,18 @@ const Reminder = new Lang.Class({
                 }));
             }));
 			this.timer_ids.push(timer_id);
-			global.log("new timer:" + timer_id);
-			global.log(this.timer_ids.length + " timers");
-            //Main.notify('Duolingo', 'Reminder set for ' + Settings.get_string('notification-time') + '.');
+			// global.log("new timer:" + timer_id);
+			// global.log(this.timer_ids.length + " timers");
         }
     },
 
     stop: function() {
-		global.log("cleaning " + this.timer_ids.length + " timers");
+		// global.log("cleaning " + this.timer_ids.length + " timers");
 		for(var timer_id in this.timer_ids) {
         	Mainloop.source_remove(timer_id);
-			global.log("timer " + timer_id + " removed.");
+			// global.log("timer " + timer_id + " removed.");
 			this.timer_ids.pop(timer_id);
 		}
-		global.log(this.timer_ids.length + " timers stopped");
+		// global.log(this.timer_ids.length + " timers stopped");
     }
 });

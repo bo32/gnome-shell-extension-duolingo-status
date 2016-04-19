@@ -7,10 +7,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 const Settings = Convenience.getSettings();
 
-let username_field;
-
 DuolingoStatusSettingsWidget.prototype = {
-
 
 	_init: function() {
 		this.vbox = new Gtk.Box({
@@ -46,13 +43,13 @@ DuolingoStatusSettingsWidget.prototype = {
 			label: 'Username',
 			halign: Gtk.Align.START
 		});
-		username_field = new Gtk.Entry({
+		this.username_field = new Gtk.Entry({
 			hexpand: true,
 			halign: Gtk.Align.FILL
 		});
-		username_field.text = Settings.get_string('username');
+		this.username_field.text = Settings.get_string('username');
 		this._grid.attach(username_label, 0, 0, 1, 1);
-		this._grid.attach(username_field, 1, 0, 3, 1);
+		this._grid.attach(this.username_field, 1, 0, 3, 1);
 
 		/* Hide icon when daily goal is reached */
 		let hide_icon_label = new Gtk.Label({
@@ -138,6 +135,67 @@ DuolingoStatusSettingsWidget.prototype = {
 		});
 
 		stack.add_titled(this._grid, "main", "Main");
+
+
+		/***************************************
+			Content section
+		***************************************/
+
+		this._grid = new Gtk.Grid({
+			orientation: Gtk.Orientation.VERTICAL,
+            row_spacing: 4,
+            column_spacing: 4
+        });
+
+        /* Display lingots switch */
+        let display_lingots_label = new Gtk.Label({
+        	label: 'Force display of lingots when double or nothing is already displayed',
+			hexpand: true,
+        	halign: Gtk.Align.START
+        });
+		let display_lingots_switch = new Gtk.Switch({
+			active: Settings.get_boolean('show-lingots'),
+			halign: Gtk.Align.END
+		});
+		display_lingots_switch.connect('notify::active', function() {
+			Settings.set_boolean('show-lingots', display_lingots_switch.active);
+		});
+		this._grid.attach(display_lingots_label, 0, 0, 1, 1);
+		this._grid.attach(display_lingots_switch, 1, 0, 1, 1);
+
+		/* Display frozen bonus */
+        // let display_frozen_label = new Gtk.Label({
+        // 	label: 'Display the frozen bonus when purchased',
+		// 	hexpand: true,
+        // 	halign: Gtk.Align.START
+        // });
+		// let display_frozen_switch = new Gtk.Switch({
+		// 	active: Settings.get_boolean('show-frozen'),
+		// 	halign: Gtk.Align.END
+		// });
+		// display_frozen_switch.connect('notify::active', function() {
+		// 	Settings.set_boolean('show-frozen', display_frozen_switch.active);
+		// });
+		// this._grid.attach(display_frozen_label, 0, 1, 1, 1);
+		// this._grid.attach(display_frozen_switch, 1, 1, 1, 1);
+
+		/* Display double or nothing switch */
+        // let display_double_or_nothing_label = new Gtk.Label({
+        // 	label: 'Display double or nothing',
+        // 	halign: Gtk.Align.START
+        // });
+		// let display_double_or_nothing_switch = new Gtk.Switch({
+		// 	active: Settings.get_boolean('show-double-or-nothing'),
+		// 	hexpand: true,
+		// 	halign: Gtk.Align.END
+		// });
+		// display_double_or_nothing_switch.connect('notify::active', function() {
+		// 	Settings.set_boolean('show-double-or-nothing', display_double_or_nothing_switch.active);
+		// });
+		// this._grid.attach(display_double_or_nothing_label, 0, 1, 1, 1);
+		// this._grid.attach(display_double_or_nothing_switch, 1, 1, 1, 1);
+
+		stack.add_titled(this._grid, "content", "Content");
 
 
 		/***************************************
@@ -306,9 +364,7 @@ DuolingoStatusSettingsWidget.prototype = {
 				}
 				break;
 			default:
-
 		}
-
 	},
 
 	_completePrefsWidget: function() {
@@ -321,13 +377,14 @@ DuolingoStatusSettingsWidget.prototype = {
         scrollingWindow.show_all();
 		scrollingWindow.unparent();
 		scrollingWindow.connect('destroy', Lang.bind(this, function() {
-			Settings.set_string('username', username_field.text);
+			Settings.set_string('username', this.username_field.text);
 			if(!this._default_browser_switch.active && this._custom_browser_field.text != '') {
 				Settings.set_string('opening-browser-command', this._custom_browser_field.text);
 			} else {
 				Settings.set_string('opening-browser-command', 'xdg-open');
 				Settings.set_boolean('use-default-browser', true);
 			}
+			global.log(scrollingWindow);
 		}));
         return scrollingWindow;
     },
