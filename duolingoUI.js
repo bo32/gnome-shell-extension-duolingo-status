@@ -82,9 +82,12 @@ const DuolingoMenuButton = new Lang.Class({
         // initiate reminder
         this._initiate_reminder();
 
-        this._display_in_original_tray_icon();
-
-        Main.panel.addToStatusArea('duolingo', this);
+        // for the top right corner, use Main.panel.addToStatusArea() with an index as a 3rd parameter.
+        // let index = 0; // 0, 1: normal in the queue, 2: just at the left of the main menu, -1: completely in the top right corner
+        // let position = 'right';
+        let index = parseInt(Settings.get_string('icon-index'));
+        let position = Settings.get_string('icon-position');
+        Main.panel.addToStatusArea('duolingo', this, index, position);
         this.emit('ready');
 	},
 
@@ -125,7 +128,6 @@ const DuolingoMenuButton = new Lang.Class({
 		});
 		let preferences_button = new St.Button({child: preferences_icon});
 		preferences_button.connect('clicked', Lang.bind(this, function() {
-			// launch_extension_prefs(Me.uuid);
             this.emit('preferences');
 		}));
 		link_menu.actor.add(preferences_button, {expand: false});
@@ -206,24 +208,25 @@ const DuolingoMenuButton = new Lang.Class({
 		}
 	},
 
-    _display_in_original_tray_icon: function() {
-        let tray = Main.legacyTray;
-        let children = tray._iconBox.get_n_children();
-        for(let i = 0; i < children; i++) {
-            global.log(tray._iconBox.get_child_at_index(i));
-            let button = tray._iconBox.get_child_at_index(i);
-            this._onTrayIconAddedRemoveOriginalIcon(Main.legacyTray._trayManager, button.child);
-        }
-    },
-
-    _onTrayIconAddedRemoveOriginalIcon: function(object, icon) {
-        // if(Settings.get_boolean('change-icon-color-when-daily-goal-reached') && icon.wm_class == "Skype") {
-        //     let button = icon.get_parent();
-        //     if(button != null) {
-        //         button.destroy();
-        //     }
-        // }
-    },
+    // _display_in_original_tray_icon: function() {
+    //     let tray = Main.legacyTray;
+    //     let children = tray._iconBox.get_n_children();
+    //     for(let i = 0; i < children; i++) {
+    //         global.log(tray._iconBox.get_child_at_index(i));
+    //         let button = tray._iconBox.get_child_at_index(i);
+    //         this._onTrayIconAddedRemoveOriginalIcon(Main.legacyTray._trayManager, button.child);
+    //     }
+    // },
+    //
+    // _onTrayIconAddedRemoveOriginalIcon: function(object, icon) {
+    //     // if(Settings.get_boolean('change-icon-color-when-daily-goal-reached') && icon.wm_class == "Skype") {
+    //     //     let button = icon.get_parent();
+    //     //     if(button != null) {
+    //     //         button.destroy();
+    //     //     }
+    //     // }
+    //     // this.boxBottomPanelTrayButton = new St.BoxLayout({ style_class: "tkb-box" });
+    // },
 
     destroy: function() {
 		this.parent();

@@ -3,6 +3,8 @@ const Soup = imports.gi.Soup;
 const Main = imports.ui.main;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
+const Convenience = Me.imports.convenience;
+const Settings = Convenience.getSettings();
 const TimeZone = imports.gi.GLib.TimeZone;
 const DateTime = imports.gi.GLib.DateTime;
 const Mainloop = imports.mainloop;
@@ -25,7 +27,14 @@ const Duolingo = new Lang.Class({
 			return;
 		}
 
+		if (this.raw_data != null) {
+			return this.raw_data;
+		}
+
 		let url = 'https://duolingo.com/users/' + this.login;
+		if (Settings.get_boolean('show-icon-in-notification-tray')) {
+			url = url.replace('duolingo', 'www.duolingo');
+		}
 		let request = Soup.Message.new('GET', url);
 		let session = new Soup.SessionSync();
 		session.queue_message(request, Lang.bind(this, function(session, response) {
@@ -64,7 +73,7 @@ const Duolingo = new Lang.Class({
 	/** Returns the sum of improvements for the given date */
 	get_improvement: function() {
 		let take_after = this.get_duolingos_daystart();
-		let improvements = this.raw_data.calendar;
+		let improvements = this.get_raw_data().calendar;
 		let sum = 0;
 		for (let i in improvements) {
 			let date = improvements[i].datetime;
@@ -76,13 +85,13 @@ const Duolingo = new Lang.Class({
 	},
 
 	get_daily_goal: function() {
-		return this.raw_data.daily_goal;
+		return this.get_raw_data().daily_goal;
 	},
 
 	/** Returns an Array of the learnt languages by the given profile. The current language is in first position.
 	Each element of the returned array contains the followinf keys: 'label', 'level', 'points', 'to_next_level'. */
 	get_languages: function(callback) {
-		let languages = this.raw_data.languages;
+		let languages = this.get_raw_data().languages;
 		let current_language;
 		let learnt_languages = new Array();
 		for (let l in languages) {
@@ -119,11 +128,11 @@ const Duolingo = new Lang.Class({
 	},
 
 	get_lingots: function() {
-		return this.raw_data.rupees;
+		return this.get_raw_data().rupees;
 	},
 
 	get_streak: function() {
-		return this.raw_data.site_streak;
+		return this.get_raw_data().site_streak;
 	},
 
 	is_daily_goal_reached: function() {
@@ -131,19 +140,19 @@ const Duolingo = new Lang.Class({
 	},
 
 	is_frozen: function() {
-		return this.raw_data.inventory != null && this.raw_data.inventory.streak_freeze != null;
+		return this.get_raw_data().inventory != null && this.get_raw_data().inventory.streak_freeze != null;
 	},
 
 	get_double_or_nothing_status: function() {
-		if (this.raw_data.inventory != null)
-			return this.raw_data.inventory.rupee_wager;
+		if (this.get_raw_data().inventory != null)
+			return this.get_raw_data().inventory.rupee_wager;
 		return null;
 	},
 
 	get_learned_chapters: function() {
 		let results = new Array();
 		let current_language =  this.get_current_learning_language()['code'];
-		let skills = this.raw_data.language_data[current_language].skills;
+		let skills = this.get_raw_data().language_data[current_language].skills;
 		for (let s in skills) {
 			// global.log(s + ": " + skills[s].short + " - " + skills[s].learned);
 			if (skills[s].learned) {
@@ -159,6 +168,6 @@ const Duolingo = new Lang.Class({
 
 	get_count_available_chapters: function() {
 		let current_language =  this.get_current_learning_language()['code'];
-		return this.raw_data.language_data[current_language].skills.length;
+		return this.get_raw_data().language_data[current_language].skills.length;
 	},
 });

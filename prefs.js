@@ -7,6 +7,9 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 const Settings = Convenience.getSettings();
 
+let ICON_POSITION = 'icon-position';
+let ICON_INDEX = 'icon-index';
+
 DuolingoStatusSettingsWidget.prototype = {
 
 	_init: function() {
@@ -30,7 +33,7 @@ DuolingoStatusSettingsWidget.prototype = {
         });
 
         /***************************************
-			Main section
+			Connection section
 		***************************************/
 
 		this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
@@ -51,90 +54,22 @@ DuolingoStatusSettingsWidget.prototype = {
 		this._grid.attach(username_label, 0, 0, 1, 1);
 		this._grid.attach(this.username_field, 1, 0, 3, 1);
 
-		/* Hide icon when daily goal is reached */
-		let hide_icon_label = new Gtk.Label({
-			label: 'Hide icon when daily goal is reached',
+		let www_label = new Gtk.Label({
+			label: 'Use \'www\' in the url',
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
-		this._grid.attach(hide_icon_label, 0, 1, 3, 1);
-
-		let hide_icon_switch = new Gtk.Switch({
-			active: Settings.get_boolean('hide-when-daily-goal-reached'),
-			halign: Gtk.Align.END
+		this._grid.attach(www_label, 0, 4, 3, 1);
+		let www_switch = new Gtk.Switch({
+			halign: Gtk.Align.END,
+			active: Settings.get_boolean('show-icon-in-notification-tray')
 		});
-		hide_icon_switch.connect('notify::active', function() {
-			Settings.set_boolean('hide-when-daily-goal-reached', hide_icon_switch.active);
-		});
-		this._grid.attach(hide_icon_switch, 2, 1, 1, 1);
-
-		/* Change icon color when daily goal is reached */
-		let change_icon_color_label = new Gtk.Label({
-			label: 'Change icon color when daily goal is reached',
-			hexpand: true,
-			halign: Gtk.Align.START
-		});
-		this._grid.attach(change_icon_color_label, 0, 2, 2, 1);
-
-		let enable_change_icon_color_label_switch = new Gtk.Switch({
-			active: Settings.get_boolean('change-icon-color-when-daily-goal-reached'),
-			halign: Gtk.Align.END
-		});
-		enable_change_icon_color_label_switch.connect('notify::active', function() {
-			Settings.set_boolean('change-icon-color-when-daily-goal-reached', enable_change_icon_color_label_switch.active);
-			color_picker_button.set_sensitive(enable_change_icon_color_label_switch.active);
-		});
-		this._grid.attach(enable_change_icon_color_label_switch, 2, 2, 1, 1);
-
-		let color_picker_button = new Gtk.ColorButton({
-			halign: Gtk.Align.CENTER
-		});
-		color_picker_button.set_use_alpha(false);
-		let rgba = new Gdk.RGBA();
-		rgba.parse(Settings.get_string('icon-color-when-daily-goal-reached'));
-		color_picker_button.set_rgba(rgba);
-		color_picker_button.connect('color-set', function() {
-			Settings.set_string('icon-color-when-daily-goal-reached', color_picker_button.rgba.to_string());
-		});
-		color_picker_button.set_sensitive(Settings.get_boolean('change-icon-color-when-daily-goal-reached'));
-		this._grid.attach(color_picker_button, 3, 2, 1, 1);
-
-		/* Change icon color when daily goal is not reached */
-		change_icon_color_label = new Gtk.Label({
-			label: 'Change icon color when daily goal is not reached',
-			hexpand: true,
-			halign: Gtk.Align.START
-		});
-		this._grid.attach(change_icon_color_label, 0, 3, 2, 1);
-
-		let color_picker_button_not_reached = new Gtk.ColorButton({
-			halign: Gtk.Align.CENTER
-		});
-		color_picker_button_not_reached.set_use_alpha(false);
-		let rgba = new Gdk.RGBA();
-		rgba.parse(Settings.get_string('icon-color-when-daily-goal-not-reached'));
-		color_picker_button_not_reached.set_rgba(rgba);
-		color_picker_button_not_reached.connect('color-set', function() {
-			Settings.set_string('icon-color-when-daily-goal-not-reached', color_picker_button_not_reached.rgba.to_string());
-		});
-		this._grid.attach(color_picker_button_not_reached, 3, 3, 1, 1);
-
-		let enable_tray_icon_label = new Gtk.Label({
-			label: 'Display icon in the icon tray (not working yet)',
-			hexpand: true,
-			halign: Gtk.Align.START
-		});
-		this._grid.attach(enable_tray_icon_label, 0, 4, 3, 1);
-		let enable_tray_icon_switch = new Gtk.Switch ({
-			active: Settings.get_boolean('show-icon-in-notification-tray'),
-			halign: Gtk.Align.END
-		});
-		this._grid.attach(enable_tray_icon_switch, 2, 4, 1, 1);
-		enable_tray_icon_switch.connect('notify::active', function() {
-			Settings.set_boolean('show-icon-in-notification-tray', enable_tray_icon_switch.active);
+		this._grid.attach(www_switch, 3, 4, 1, 1);
+		www_switch.connect('notify::active', function() {
+			Settings.set_boolean('show-icon-in-notification-tray', www_switch.active);
 		});
 
-		stack.add_titled(this._grid, "main", "Main");
+		stack.add_titled(this._grid, "connection", "Connection");
 
 
 		/***************************************
@@ -197,6 +132,129 @@ DuolingoStatusSettingsWidget.prototype = {
 
 		stack.add_titled(this._grid, "content", "Content");
 
+		/***************************************
+			Icon section
+		***************************************/
+
+		this._grid = new Gtk.Grid({
+			orientation: Gtk.Orientation.VERTICAL,
+            row_spacing: 4,
+            column_spacing: 4
+        });
+
+		/* Corner icon position combobox */
+		let position_label = new Gtk.Label({
+			label: 'Corner icon position',
+			hexpand: true,
+			halign: Gtk.Align.START
+		});
+
+		let position_combo = new Gtk.ComboBoxText({
+			halign: Gtk.Align.END
+		});
+		position_combo.append('left', 'Left');
+		position_combo.append('center', 'Center');
+		position_combo.append('right', 'Right');
+		position_combo.set_active_id(Settings.get_string(ICON_POSITION));
+
+		position_combo.connect('changed', function(position_combo) {
+			Settings.set_string(ICON_POSITION, position_combo.get_active_id());
+		});
+
+		this._grid.attach(position_label, 0, 0, 3, 1);
+		this._grid.attach(position_combo, 3, 0, 1, 1);
+
+		/* Index icon position combobox */
+		let index_label = new Gtk.Label({
+			label: 'Index icon position',
+			hexpand: true,
+			halign: Gtk.Align.START
+		});
+
+		let index_combo = new Gtk.ComboBoxText({
+			halign: Gtk.Align.END
+		});
+		index_combo.append('0', 'Left');
+		index_combo.append('2', 'Middle');
+		index_combo.append('-1', 'Right');
+		index_combo.set_active_id(Settings.get_string(ICON_INDEX));
+
+		index_combo.connect('changed', function(index_combo) {
+			Settings.set_string(ICON_INDEX, index_combo.get_active_id());
+		});
+
+		this._grid.attach(index_label, 0, 1, 3, 1);
+		this._grid.attach(index_combo, 3, 1, 1, 1);
+
+		/* Hide icon when daily goal is reached */
+		let hide_icon_label = new Gtk.Label({
+			label: 'Hide icon when daily goal is reached',
+			hexpand: true,
+			halign: Gtk.Align.START
+		});
+		this._grid.attach(hide_icon_label, 0, 2, 3, 1);
+
+		let hide_icon_switch = new Gtk.Switch({
+			active: Settings.get_boolean('hide-when-daily-goal-reached'),
+			halign: Gtk.Align.END
+		});
+		hide_icon_switch.connect('notify::active', function() {
+			Settings.set_boolean('hide-when-daily-goal-reached', hide_icon_switch.active);
+		});
+		this._grid.attach(hide_icon_switch, 3, 2, 1, 1);
+
+		/* Change icon color when daily goal is reached */
+		let change_icon_color_label = new Gtk.Label({
+			label: 'Change icon color when daily goal is reached',
+			hexpand: true,
+			halign: Gtk.Align.START
+		});
+		this._grid.attach(change_icon_color_label, 0, 3, 2, 1);
+
+		let enable_change_icon_color_label_switch = new Gtk.Switch({
+			active: Settings.get_boolean('change-icon-color-when-daily-goal-reached'),
+			halign: Gtk.Align.END
+		});
+		enable_change_icon_color_label_switch.connect('notify::active', function() {
+			Settings.set_boolean('change-icon-color-when-daily-goal-reached', enable_change_icon_color_label_switch.active);
+			color_picker_button.set_sensitive(enable_change_icon_color_label_switch.active);
+		});
+		this._grid.attach(enable_change_icon_color_label_switch, 2, 3, 1, 1);
+
+		let color_picker_button = new Gtk.ColorButton({
+			halign: Gtk.Align.CENTER
+		});
+		color_picker_button.set_use_alpha(false);
+		let rgba = new Gdk.RGBA();
+		rgba.parse(Settings.get_string('icon-color-when-daily-goal-reached'));
+		color_picker_button.set_rgba(rgba);
+		color_picker_button.connect('color-set', function() {
+			Settings.set_string('icon-color-when-daily-goal-reached', color_picker_button.rgba.to_string());
+		});
+		color_picker_button.set_sensitive(Settings.get_boolean('change-icon-color-when-daily-goal-reached'));
+		this._grid.attach(color_picker_button, 3, 3, 1, 1);
+
+		/* Change icon color when daily goal is not reached */
+		change_icon_color_label = new Gtk.Label({
+			label: 'Change icon color when daily goal is not reached',
+			hexpand: true,
+			halign: Gtk.Align.START
+		});
+		this._grid.attach(change_icon_color_label, 0, 4, 2, 1);
+
+		let color_picker_button_not_reached = new Gtk.ColorButton({
+			halign: Gtk.Align.CENTER
+		});
+		color_picker_button_not_reached.set_use_alpha(false);
+		let rgba = new Gdk.RGBA();
+		rgba.parse(Settings.get_string('icon-color-when-daily-goal-not-reached'));
+		color_picker_button_not_reached.set_rgba(rgba);
+		color_picker_button_not_reached.connect('color-set', function() {
+			Settings.set_string('icon-color-when-daily-goal-not-reached', color_picker_button_not_reached.rgba.to_string());
+		});
+		this._grid.attach(color_picker_button_not_reached, 3, 4, 1, 1);
+
+		stack.add_titled(this._grid, "icon", "Icon");
 
 		/***************************************
 			Browser section
