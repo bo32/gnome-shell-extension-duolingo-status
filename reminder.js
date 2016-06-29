@@ -14,7 +14,7 @@ const Reminder = new Lang.Class({
 
 	_init: function(duolingo) {
         this.duolingo = duolingo;
-		this.timer_ids = [];
+		// this.timer_ids = [];
 	},
 
     start: function() {
@@ -33,26 +33,29 @@ const Reminder = new Lang.Class({
                 // notification if for tomorrow
                 delay = 24 * 3600 + delay;
             }
-            let timer_id = Mainloop.timeout_add((delay) * 1000, Lang.bind(this, function() {
+            this.timer_id = Mainloop.timeout_add((delay) * 1000, Lang.bind(this, function() {
                 if (!this.duolingo.is_daily_goal_reached()) {
                     Main.notify('Duolingo', 'Time to do Duolingo !');
-                }
-                Mainloop.timeout_add(1000, Lang.bind(this, function() {
-                    this.start();
-                }));
+				}
+                this.timer_id = null;
+                // Mainloop.timeout_add(1000, Lang.bind(this, function() {
+                //     this.start();
+                // }));
             }));
-			this.timer_ids.push(timer_id);
-			// global.log("new timer:" + timer_id);
+			// this.timer_ids.push(timer_id);
+			global.log("new timer:" + this.timer_id + " at " + Settings.get_string('notification-time') + ", in " + delay + "s.");
 			// global.log(this.timer_ids.length + " timers");
         }
     },
 
     stop: function() {
 		// global.log("cleaning " + this.timer_ids.length + " timers");
-		for(var timer_id in this.timer_ids) {
-        	Mainloop.source_remove(timer_id);
+		// for(var timer_id in this.timer_ids) {
+		if(this.timer_id != null) {
+			global.log("deactivating the time " + this.timer_id);
+        	Mainloop.source_remove(this.timer_id);
 			// global.log("timer " + timer_id + " removed.");
-			this.timer_ids.pop(timer_id);
+			this.timer_id = null;
 		}
 		// global.log(this.timer_ids.length + " timers stopped");
     }

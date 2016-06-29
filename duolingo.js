@@ -24,7 +24,7 @@ const Duolingo = new Lang.Class({
 	get_raw_data: function(callback) {
 		if (!this.login) {
 			callback( "Please enter a username in the settings.");
-			return;
+			return null;
 		}
 
 		if (this.raw_data != null) {
@@ -57,6 +57,7 @@ const Duolingo = new Lang.Class({
 				}
 			}
 		}));
+		return this.raw_data;
 	},
 
 	/* Returns today's timestamp at midnight, relative to your time zone. */

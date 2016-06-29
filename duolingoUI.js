@@ -146,6 +146,10 @@ const DuolingoMenuButton = new Lang.Class({
         }
     },
 
+    _stop_reminder: function() {
+        this.reminder.stop();
+    },
+
 	_add_language_menus: function() {
         let languages = this.duolingo.get_languages();
 		for (let l in languages) {
@@ -208,27 +212,8 @@ const DuolingoMenuButton = new Lang.Class({
 		}
 	},
 
-    // _display_in_original_tray_icon: function() {
-    //     let tray = Main.legacyTray;
-    //     let children = tray._iconBox.get_n_children();
-    //     for(let i = 0; i < children; i++) {
-    //         global.log(tray._iconBox.get_child_at_index(i));
-    //         let button = tray._iconBox.get_child_at_index(i);
-    //         this._onTrayIconAddedRemoveOriginalIcon(Main.legacyTray._trayManager, button.child);
-    //     }
-    // },
-    //
-    // _onTrayIconAddedRemoveOriginalIcon: function(object, icon) {
-    //     // if(Settings.get_boolean('change-icon-color-when-daily-goal-reached') && icon.wm_class == "Skype") {
-    //     //     let button = icon.get_parent();
-    //     //     if(button != null) {
-    //     //         button.destroy();
-    //     //     }
-    //     // }
-    //     // this.boxBottomPanelTrayButton = new St.BoxLayout({ style_class: "tkb-box" });
-    // },
-
     destroy: function() {
+        this._stop_reminder();
 		this.parent();
     },
 });
