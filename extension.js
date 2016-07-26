@@ -5,6 +5,7 @@ const Main = imports.ui.main;
 const Lang = imports.lang;
 
 const DuolingoUI = Me.imports.duolingoUI;
+const Constants = Me.imports.constants;
 
 function launch_extension_prefs(uuid) {
     let appSys = Shell.AppSystem.get_default();
@@ -24,10 +25,10 @@ function init() {
 let menu;
 function enable() {
     menu = new DuolingoUI.DuolingoMenuButton();
-    menu.connect('ready', function () {
+    menu.connect(Constants.EVENT_READY, function () {
         menu.get_refresh_button().connect('clicked', restart);
     });
-    menu.connect('preferences', function () {
+    menu.connect(Constants.EVENT_PREFERENCES, function () {
         let app = launch_extension_prefs(Me.uuid);
         // TODO refresh the extension after closing the preferences
         // app.connect('windows-changed', function() {

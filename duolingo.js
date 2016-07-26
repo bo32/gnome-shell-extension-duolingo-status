@@ -9,13 +9,18 @@ const TimeZone = imports.gi.GLib.TimeZone;
 const DateTime = imports.gi.GLib.DateTime;
 const Mainloop = imports.mainloop;
 
+const Constants = Me.imports.constants;
+
+const TIME_OUT_ATTEMPTS = 3;
+const TIME_OUT_DURATION = 3500;
+
 const Duolingo = new Lang.Class({
 	Name: 'Duolingo',
 
 	_init: function(login) {
 		this.login = login;
 		this.raw_data = null;
-		this.timeouts = 3;
+		this.timeouts = TIME_OUT_ATTEMPTS;
 	},
 
 	/* Calls the server and saves the answer in the property raw_data.
@@ -23,7 +28,7 @@ const Duolingo = new Lang.Class({
 	If an error different than 200 is returned, displays a notification, and the menu is not built. */
 	get_raw_data: function(callback) {
 		if (!this.login) {
-			callback( "Please enter a username in the settings.");
+			callback("Please enter a username in the settings.");
 			return null;
 		}
 
@@ -32,8 +37,8 @@ const Duolingo = new Lang.Class({
 		}
 
 		let url = 'https://duolingo.com/users/' + this.login;
-		if (Settings.get_boolean('show-icon-in-notification-tray')) {
-			url = url.replace('duolingo', 'www.duolingo');
+		if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
+			url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
 		}
 		let request = Soup.Message.new('GET', url);
 		let session = new Soup.SessionSync();
@@ -51,7 +56,7 @@ const Duolingo = new Lang.Class({
 				if (this.timeouts == 0) {
 					callback("The server couldn't be reached.");
 				} else {
-					Mainloop.timeout_add(3500, Lang.bind(this, function() {
+					Mainloop.timeout_add(TIME_OUT_DURATION, Lang.bind(this, function() {
 						this.get_raw_data(callback);
 					}));
 				}
@@ -99,12 +104,12 @@ const Duolingo = new Lang.Class({
 			if (Boolean(languages[l].learning)) {
 				/* save the language and the related information in a cell */
 				let language = new Array();
-				language['label'] = languages[l].language_string;
-				language['code'] = languages[l].language;
-				language['level'] = languages[l].level;
-				language['points'] = languages[l].points;
-				language['to_next_level'] = languages[l].to_next_level;
-				language['current_learning'] = languages[l].current_learning;
+				language[Constants.LANGUAGE_LABEL] = languages[l].language_string;
+				language[Constants.LANGUAGE_CODE] = languages[l].language;
+				language[Constants.LANGUAGE_LEVEL] = languages[l].level;
+				language[Constants.LANGUAGE_POINTS] = languages[l].points;
+				language[Constants.LANGUAGE_TO_NEXT_LEVEL] = languages[l].to_next_level;
+				language[Constants.LANGUAGE_CURRENT_LANGUAGE] = languages[l].current_learning;
 
 				/* add the current language in the final list */
 				if (Boolean(languages[l].current_learning)) {
@@ -121,7 +126,7 @@ const Duolingo = new Lang.Class({
 	get_current_learning_language: function() {
 		let languages = this.get_languages();
 		for (let l in languages) {
-			if(languages[l]['current_learning']) {
+			if(languages[l][Constants.LANGUAGE_CURRENT_LANGUAGE]) {
 				return languages[l];
 			}
 		}
@@ -152,7 +157,7 @@ const Duolingo = new Lang.Class({
 
 	get_learned_chapters: function() {
 		let results = new Array();
-		let current_language =  this.get_current_learning_language()['code'];
+		let current_language =  this.get_current_learning_language()[Constants.LANGUAGE_CODE];
 		let skills = this.get_raw_data().language_data[current_language].skills;
 		for (let s in skills) {
 			// global.log(s + ": " + skills[s].short + " - " + skills[s].learned);
@@ -168,7 +173,7 @@ const Duolingo = new Lang.Class({
 	},
 
 	get_count_available_chapters: function() {
-		let current_language =  this.get_current_learning_language()['code'];
+		let current_language =  this.get_current_learning_language()[Constants.LANGUAGE_CODE];
 		return this.get_raw_data().language_data[current_language].skills.length;
 	},
 });
