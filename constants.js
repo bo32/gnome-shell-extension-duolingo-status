@@ -22,14 +22,9 @@ let ICON_FIRE = Me.path + '/icons/fire.png';
 let ICON_FLAG_PATH = Me.path + '/icons/flags/';
 let ICON_LINGOTS = Me.path + '/icons/ruby.png';
 
-let LABEL_COMPLETION = 'Completion';
 let LABEL_DUOLINGO = 'duolingo';
 let LABEL_DUOLINGO_WITH_WWW_PREFIX = 'www.duolingo';
-let LABEL_LVL = 'lvl. ';
-let LABEL_NEXT_LEVEL = 'Next level in';
 let LABEL_NOTIFICATION_TITLE = 'Duolingo Status extension';
-let LABEL_TOTAL = 'Total';
-let LABEL_XP = ' XP';
 let LABEL_XP_SEPARATOR = ' / ';
 
 let LANGUAGE_LABEL = 'label';
@@ -38,10 +33,6 @@ let LANGUAGE_LEVEL = 'level';
 let LANGUAGE_POINTS = 'points';
 let LANGUAGE_TO_NEXT_LEVEL = 'to_next_level';
 let LANGUAGE_CURRENT_LANGUAGE = 'current_learning';
-
-let MESSAGE_ENTER_USERNAME = "Please enter a username in the settings.";
-let MESSAGE_USER_NOT_FOUND = "The user couldn't be found.";
-let MESSAGE_SERVER_NOT_REACHED = "The server couldn't be reached.";
 
 let STYLE_DOUBLE_OR_NOTHING_LABEL = 'double_or_nothing_label';
 let STYLE_DUOLINGO_LINK = 'duolingo_link';

@@ -34,7 +34,7 @@ const Reminder = new Lang.Class({
             }
             this.timer_id = Mainloop.timeout_add((delay) * 1000, Lang.bind(this, function() {
                 if (!this.duolingo.is_daily_goal_reached()) {
-                    Main.notify('Duolingo', 'Time to do Duolingo !');
+                    Main.notify(Constants.LABEL_NOTIFICATION_TITLE, 'Time to do Duolingo !');
 				}
                 this.timer_id = null;
             }));

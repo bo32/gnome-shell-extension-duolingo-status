@@ -22,7 +22,6 @@ const Constants = Me.imports.constants;
 
 let icon_size = 16;
 let menu_width = 250;
-let notification_label = 'Duolingo Status extension';
 
 const DuolingoMenuButton = new Lang.Class({
     Name: 'Duolingo.DuolingoMenuButton',
@@ -42,7 +41,7 @@ const DuolingoMenuButton = new Lang.Class({
 		}
 
 		if(error) {
-			Main.notify(notification_label, error);
+			Main.notify(Constants.LABEL_NOTIFICATION_TITLE, error);
 			this._init_icon(Constants.ICON_DUOLINGO_ALERT);
 			this._init_duolingo_menu();
 		} else {
@@ -182,7 +181,7 @@ const DuolingoMenuButton = new Lang.Class({
                 y_align: Clutter.ActorAlign.CENTER});
     		let double_or_nothing_label = new St.Label({
                 y_align:Clutter.ActorAlign.CENTER,
-                text: double_or_nothing + ' / 7'});
+                text: double_or_nothing + Constants.LABEL_XP_SEPARATOR + '7'});
             double_or_nothing_label.add_style_class_name(Constants.STYLE_DOUBLE_OR_NOTHING_LABEL);
         	this.profile_menu.connect('activate', this._open_lingots_link);
     		this.profile_menu.actor.add(fire_icon);
@@ -197,7 +196,7 @@ const DuolingoMenuButton = new Lang.Class({
 	_set_todays_improvement: function() {
 		let improvement = this.duolingo.get_improvement();
 		let daily_goal = this.duolingo.get_daily_goal();
-		this.todays_improvement.text = improvement + ' / ' + daily_goal + ' XP';
+		this.todays_improvement.text = improvement + Constants.LABEL_XP_SEPARATOR + daily_goal + ' XP';
 
 		if (!this.duolingo.is_daily_goal_reached()) {
 			this.hbox.get_child_at_index(0).style = 'color: ' + Settings.get_string(Constants.SETTING_ICON_COLOR_WHEN_DAILY_GOAL_NOT_REACHED) +';'
@@ -253,7 +252,7 @@ const LanguageSubMenu = new Lang.Class({
         if (language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
             let completion = new PopupMenu.PopupBaseMenuItem();
     		completion.actor.add(new St.Label({text: 'Completion', x_expand: true}));
-            let label = duolingo.get_count_learned_chapters() + ' / ' + duolingo.get_count_available_chapters();
+            let label = duolingo.get_count_learned_chapters() + Constants.LABEL_XP_SEPARATOR + duolingo.get_count_available_chapters();
     		completion.actor.add(new St.Label({text: label}));
     		this.menu.addMenuItem(completion);
         }
