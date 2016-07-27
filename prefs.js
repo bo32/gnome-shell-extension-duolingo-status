@@ -98,38 +98,6 @@ DuolingoStatusSettingsWidget.prototype = {
 		this._grid.attach(display_lingots_label, 0, 0, 1, 1);
 		this._grid.attach(display_lingots_switch, 1, 0, 1, 1);
 
-		/* Display frozen bonus */
-        // let display_frozen_label = new Gtk.Label({
-        // 	label: 'Display the frozen bonus when purchased',
-		// 	hexpand: true,
-        // 	halign: Gtk.Align.START
-        // });
-		// let display_frozen_switch = new Gtk.Switch({
-		// 	active: Settings.get_boolean('show-frozen'),
-		// 	halign: Gtk.Align.END
-		// });
-		// display_frozen_switch.connect('notify::active', function() {
-		// 	Settings.set_boolean('show-frozen', display_frozen_switch.active);
-		// });
-		// this._grid.attach(display_frozen_label, 0, 1, 1, 1);
-		// this._grid.attach(display_frozen_switch, 1, 1, 1, 1);
-
-		/* Display double or nothing switch */
-        // let display_double_or_nothing_label = new Gtk.Label({
-        // 	label: 'Display double or nothing',
-        // 	halign: Gtk.Align.START
-        // });
-		// let display_double_or_nothing_switch = new Gtk.Switch({
-		// 	active: Settings.get_boolean('show-double-or-nothing'),
-		// 	hexpand: true,
-		// 	halign: Gtk.Align.END
-		// });
-		// display_double_or_nothing_switch.connect('notify::active', function() {
-		// 	Settings.set_boolean('show-double-or-nothing', display_double_or_nothing_switch.active);
-		// });
-		// this._grid.attach(display_double_or_nothing_label, 0, 1, 1, 1);
-		// this._grid.attach(display_double_or_nothing_switch, 1, 1, 1, 1);
-
 		stack.add_titled(this._grid, "content", "Content");
 
 		/***************************************
@@ -306,12 +274,12 @@ DuolingoStatusSettingsWidget.prototype = {
 			this._custom_browser_field.text = this._clean_up_commandline(app_chooser_button.get_app_info().get_commandline());
 		}
 
-		this._default_browser_switch.connect('notify::active', function() {
+		this._default_browser_switch.connect('notify::active', Lang.bind(this, function() {
 			Settings.set_boolean(Constants.SETTING_USE_DEFAULT_BROWSER, this._default_browser_switch.active);
 			custom_browser_label.set_sensitive(!this._default_browser_switch.active);
 			this._custom_browser_field.set_sensitive(!this._default_browser_switch.active);
 			app_chooser_button.set_sensitive(!this._default_browser_switch.active);
-		});
+		}));
 
 		app_chooser_button.connect('changed', function(app_chooser_button) {
 			this._custom_browser_field.text = DuolingoStatusSettingsWidget.prototype._clean_up_commandline(app_chooser_button.get_app_info().get_commandline());
