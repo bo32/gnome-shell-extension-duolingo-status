@@ -14,6 +14,9 @@ const Constants = Me.imports.constants;
 const TIME_OUT_ATTEMPTS = 3;
 const TIME_OUT_DURATION = 3500;
 
+const Gettext = imports.gettext;
+const _ = Gettext.gettext;
+
 const Duolingo = new Lang.Class({
 	Name: 'Duolingo',
 
@@ -28,7 +31,7 @@ const Duolingo = new Lang.Class({
 	If an error different than 200 is returned, displays a notification, and the menu is not built. */
 	get_raw_data: function(callback) {
 		if (!this.login) {
-			callback("Please enter a username in the settings.");
+			callback(_("Please enter a username in the settings."));
 			return null;
 		}
 
@@ -49,12 +52,12 @@ const Duolingo = new Lang.Class({
 					callback();
 				} catch (err) {
 					global.log(err);
-					callback("The user couldn't be found.");
+					callback(_("The user couldn't be found."));
 				}
 			} else {
 				this.timeouts--;
 				if (this.timeouts == 0) {
-					callback("The server couldn't be reached.");
+					callback(_("The server couldn't be reached."));
 				} else {
 					Mainloop.timeout_add(TIME_OUT_DURATION, Lang.bind(this, function() {
 						this.get_raw_data(callback);
@@ -160,7 +163,6 @@ const Duolingo = new Lang.Class({
 		let current_language =  this.get_current_learning_language()[Constants.LANGUAGE_CODE];
 		let skills = this.get_raw_data().language_data[current_language].skills;
 		for (let s in skills) {
-			// global.log(s + ": " + skills[s].short + " - " + skills[s].learned);
 			if (skills[s].learned) {
 				results.push(skills[s]);
 			}

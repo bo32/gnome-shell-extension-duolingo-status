@@ -20,6 +20,9 @@ const Utils = Me.imports.utils;
 const Settings = Convenience.getSettings();
 const Constants = Me.imports.constants;
 
+const Gettext = imports.gettext;
+const _ = Gettext.gettext;
+
 let icon_size = 16;
 let menu_width = 250;
 
@@ -29,6 +32,10 @@ const DuolingoMenuButton = new Lang.Class({
 
 	_init: function() {
         this.parent(0.0, 'duolingo');
+
+        Gettext.textdomain(Me.uuid);
+	    Gettext.bindtextdomain(Me.uuid, Me.dir.get_child('locale').get_path());
+
         this.reminder = null;
 		this.duolingo = new Duolingo(Settings.get_string(Constants.SETTING_USERNAME));
 		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
@@ -236,22 +243,22 @@ const LanguageSubMenu = new Lang.Class({
 		this.icon.icon_size = icon_size;
 
 		/* Insert the current level of the language. 5 is the index of the last position in the sub menu */
-		this.actor.insert_child_at_index(new St.Label({ text: 'lvl. ' + language[Constants.LANGUAGE_LEVEL].toString(), y_align: Clutter.ActorAlign.CENTER }), 5);
+		this.actor.insert_child_at_index(new St.Label({ text: _('lvl. ') + language[Constants.LANGUAGE_LEVEL].toString(), y_align: Clutter.ActorAlign.CENTER }), 5);
 
 		/* Add the menu displaying the global points of the language */
 		let menu_total_points = new PopupMenu.PopupBaseMenuItem();
-		menu_total_points.actor.add(new St.Label({text: 'Total', x_expand: true, style: 'font-weight: bold;'}));
+		menu_total_points.actor.add(new St.Label({text: _('Total'), x_expand: true, style: 'font-weight: bold;'}));
 		menu_total_points.actor.add(new St.Label({text: Utils.formatThousandNumber(language[Constants.LANGUAGE_POINTS].toString()) + ' XP', style: 'font-weight: bold;'}));
 		this.menu.addMenuItem(menu_total_points);
 
 		let menu_next_level = new PopupMenu.PopupBaseMenuItem();
-		menu_next_level.actor.add(new St.Label({text: 'Next level in', x_expand: true}));
+		menu_next_level.actor.add(new St.Label({text: _('Next level in'), x_expand: true}));
 		menu_next_level.actor.add(new St.Label({text: Utils.formatThousandNumber(language[Constants.LANGUAGE_TO_NEXT_LEVEL].toString()) + ' XP'}));
 		this.menu.addMenuItem(menu_next_level);
 
         if (language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
             let completion = new PopupMenu.PopupBaseMenuItem();
-    		completion.actor.add(new St.Label({text: 'Completion', x_expand: true}));
+    		completion.actor.add(new St.Label({text: _('Completion'), x_expand: true}));
             let label = duolingo.get_count_learned_chapters() + Constants.LABEL_XP_SEPARATOR + duolingo.get_count_available_chapters();
     		completion.actor.add(new St.Label({text: label}));
     		this.menu.addMenuItem(completion);

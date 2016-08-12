@@ -8,11 +8,17 @@ const Convenience = Me.imports.convenience;
 const Settings = Convenience.getSettings();
 const Constants = Me.imports.constants;
 
+const Gettext = imports.gettext;
+const _ = Gettext.gettext;
+
 const RESTART_REASON_REMINDER = 'reminder';
 
 DuolingoStatusSettingsWidget.prototype = {
 
 	_init: function() {
+		Gettext.textdomain(Me.uuid);
+	    Gettext.bindtextdomain(Me.uuid, Me.dir.get_child('locale').get_path());
+
 		this.vbox = new Gtk.Box({
 			orientation: Gtk.Orientation.VERTICAL,
 			spacing: 6
@@ -43,7 +49,7 @@ DuolingoStatusSettingsWidget.prototype = {
 
 		/* Username field */
 		let username_label = new Gtk.Label({
-			label: 'Username',
+			label: _('Username'),
 			halign: Gtk.Align.START
 		});
 		this.username_field = new Gtk.Entry({
@@ -55,7 +61,7 @@ DuolingoStatusSettingsWidget.prototype = {
 		this._grid.attach(this.username_field, 1, 0, 3, 1);
 
 		let www_label = new Gtk.Label({
-			label: 'Use \'www\' in the url',
+			label: _('Use \'www\' in the url'),
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
@@ -69,7 +75,7 @@ DuolingoStatusSettingsWidget.prototype = {
 			Settings.set_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY, www_switch.active);
 		});
 
-		stack.add_titled(this._grid, "connection", "Connection");
+		stack.add_titled(this._grid, "connection", _("Connection"));
 
 
 		/***************************************
@@ -84,7 +90,7 @@ DuolingoStatusSettingsWidget.prototype = {
 
         /* Display lingots switch */
         let display_lingots_label = new Gtk.Label({
-        	label: 'Force display of lingots when double or nothing is already displayed',
+        	label: _('Force display of lingots when double or nothing is already displayed'),
 			hexpand: true,
         	halign: Gtk.Align.START
         });
@@ -98,7 +104,7 @@ DuolingoStatusSettingsWidget.prototype = {
 		this._grid.attach(display_lingots_label, 0, 0, 1, 1);
 		this._grid.attach(display_lingots_switch, 1, 0, 1, 1);
 
-		stack.add_titled(this._grid, "content", "Content");
+		stack.add_titled(this._grid, "content", _("Content"));
 
 		/***************************************
 			Icon section
@@ -112,7 +118,7 @@ DuolingoStatusSettingsWidget.prototype = {
 
 		/* Corner icon position combobox */
 		let position_label = new Gtk.Label({
-			label: 'Corner icon position',
+			label: _('Corner icon position'),
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
@@ -120,9 +126,9 @@ DuolingoStatusSettingsWidget.prototype = {
 		let position_combo = new Gtk.ComboBoxText({
 			halign: Gtk.Align.END
 		});
-		position_combo.append('left', 'Left');
-		position_combo.append('center', 'Center');
-		position_combo.append('right', 'Right');
+		position_combo.append('left', _('Left'));
+		position_combo.append('center', _('Center'));
+		position_combo.append('right', _('Right'));
 		position_combo.set_active_id(Settings.get_string(Constants.SETTING_ICON_POSITION));
 
 		position_combo.connect('changed', function(position_combo) {
@@ -134,7 +140,7 @@ DuolingoStatusSettingsWidget.prototype = {
 
 		/* Index icon position combobox */
 		let index_label = new Gtk.Label({
-			label: 'Index icon position',
+			label: _('Index icon position'),
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
@@ -142,9 +148,9 @@ DuolingoStatusSettingsWidget.prototype = {
 		let index_combo = new Gtk.ComboBoxText({
 			halign: Gtk.Align.END
 		});
-		index_combo.append('0', 'Left');
-		index_combo.append('2', 'Middle');
-		index_combo.append('-1', 'Right');
+		index_combo.append('0', _('Left'));
+		index_combo.append('2', _('Middle'));
+		index_combo.append('-1', _('Right'));
 		index_combo.set_active_id(Settings.get_string(Constants.SETTING_ICON_INDEX));
 
 		index_combo.connect('changed', function(index_combo) {
@@ -156,7 +162,7 @@ DuolingoStatusSettingsWidget.prototype = {
 
 		/* Hide icon when daily goal is reached */
 		let hide_icon_label = new Gtk.Label({
-			label: 'Hide icon when daily goal is reached',
+			label: _('Hide icon when daily goal is reached'),
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
@@ -173,7 +179,7 @@ DuolingoStatusSettingsWidget.prototype = {
 
 		/* Change icon color when daily goal is reached */
 		let change_icon_color_label = new Gtk.Label({
-			label: 'Change icon color when daily goal is reached',
+			label: _('Change icon color when daily goal is reached'),
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
@@ -204,7 +210,7 @@ DuolingoStatusSettingsWidget.prototype = {
 
 		/* Change icon color when daily goal is not reached */
 		change_icon_color_label = new Gtk.Label({
-			label: 'Change icon color when daily goal is not reached',
+			label: _('Change icon color when daily goal is not reached'),
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
@@ -222,7 +228,7 @@ DuolingoStatusSettingsWidget.prototype = {
 		});
 		this._grid.attach(color_picker_button_not_reached, 3, 4, 1, 1);
 
-		stack.add_titled(this._grid, "icon", "Icon");
+		stack.add_titled(this._grid, "icon", _("Icon"));
 
 		/***************************************
 			Browser section
@@ -236,7 +242,7 @@ DuolingoStatusSettingsWidget.prototype = {
 
         /* Default browser switch */
         let default_browser_label = new Gtk.Label({
-        	label: 'Default browser',
+        	label: _('Default browser'),
         	halign: Gtk.Align.START
         });
 		this._default_browser_switch = new Gtk.Switch({
@@ -248,7 +254,7 @@ DuolingoStatusSettingsWidget.prototype = {
 
         /* Custom browser */
 		let custom_browser_label = new Gtk.Label({
-			label: 'Browser command',
+			label: _('Browser command'),
 			halign: Gtk.Align.START,
 			sensitive: !Settings.get_boolean(Constants.SETTING_USE_DEFAULT_BROWSER)
 		});
@@ -286,7 +292,7 @@ DuolingoStatusSettingsWidget.prototype = {
 			Settings.set_int(Constants.SETTING_APP_CHOOSER_ACTIVE_INDEX, app_chooser_button.active);
 		});
 
-		stack.add_titled(this._grid, "browser", "Browser");
+		stack.add_titled(this._grid, "browser", _("Browser"));
 
 
 		/***************************************
@@ -302,7 +308,7 @@ DuolingoStatusSettingsWidget.prototype = {
         });
 
         let activate_alarm_label = new Gtk.Label({
-        	label: 'Enable notification'
+        	label: _('Enable notification')
         });
    		this._grid.attach(activate_alarm_label, 0, 0, 1, 1);
 
@@ -362,7 +368,7 @@ DuolingoStatusSettingsWidget.prototype = {
 		});
 		this._grid.attach(this.info_reminder, 0, 2, 5, 1);
 
-		stack.add_titled(this._grid, "reminder", "Reminder");
+		stack.add_titled(this._grid, "reminder", _("Reminder"));
 
 		this.vbox.pack_start(stack_switcher, false, true, 0);
 		this.vbox.pack_start(stack, true, true, 0);
@@ -386,7 +392,7 @@ DuolingoStatusSettingsWidget.prototype = {
 		switch (stack_label) {
 			case RESTART_REASON_REMINDER:
 				if (this.info_reminder.label == '') {
-					this.info_reminder.label = 'Restart gnome-shell (Alt + F2, then enter \'r\') to apply the reminder changes.';
+					this.info_reminder.label = _('Restart gnome-shell (Alt + F2, then enter \'r\') to apply the reminder changes.');
 				}
 				break;
 			default:
