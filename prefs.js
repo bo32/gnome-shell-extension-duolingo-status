@@ -220,7 +220,8 @@ DuolingoStatusSettingsWidget.prototype = {
 			halign: Gtk.Align.CENTER
 		});
 		color_picker_button_not_reached.set_use_alpha(false);
-		let rgba = new Gdk.RGBA();
+		
+		rgba = new Gdk.RGBA();
 		rgba.parse(Settings.get_string(Constants.SETTING_ICON_COLOR_WHEN_DAILY_GOAL_NOT_REACHED));
 		color_picker_button_not_reached.set_rgba(rgba);
 		color_picker_button_not_reached.connect('color-set', function() {
@@ -416,7 +417,6 @@ DuolingoStatusSettingsWidget.prototype = {
 				Settings.set_string(Constants.SETTING_OPENING_BROWSER_COMMAND, 'xdg-open');
 				Settings.set_boolean(Constants.SETTING_USE_DEFAULT_BROWSER, true);
 			}
-			global.log(scrollingWindow);
 		}));
         return scrollingWindow;
     },

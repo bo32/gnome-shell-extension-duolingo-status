@@ -24,6 +24,13 @@ const Duolingo = new Lang.Class({
 		this.login = login;
 		this.raw_data = null;
 		this.timeouts = TIME_OUT_ATTEMPTS;
+		// this.session = new Soup.Session();
+		// this.session.user_agent = Me.metadata.uuid;
+		// this.session.connect('authenticate', Lang.bind(this, function() {
+		// 	global.log('authentication...');
+		// }));
+		// this.auth = null;
+		// this.authenticate(login, 'Obama32');
 	},
 
 	/* Calls the server and saves the answer in the property raw_data.
@@ -178,4 +185,109 @@ const Duolingo = new Lang.Class({
 		let current_language =  this.get_current_learning_language()[Constants.LANGUAGE_CODE];
 		return this.get_raw_data().language_data[current_language].skills.length;
 	},
+
+	post_switch_language: function(new_language_code) {
+		global.log('learning_language=' + new_language_code);
+
+
+
+
+		let session = new Soup.SessionSync();
+		session.user_agent = Me.metadata.uuid;
+		session.prefetch_dns('https://www.duolingo.com/', null, function() {global.log('done');});
+
+		let authURL = 'https://www.duolingo.com/login';
+		let authParams = {'login': 'newbie32', 'password': 'Obama32'};
+		let message = Soup.form_request_new_from_hash('POST', authURL, authParams);
+		message.request_headers.append('Connection', 'keep-alive');
+		session.use_ntlm = false;
+		let auth = new Soup.AuthBasic();
+		auth.authenticate('newbie32', 'Obama32');
+		message.request_headers.append('Authorization', auth.get_authorization(message));
+		session.queue_message(message, Lang.bind(this, function(session, response) {
+			global.log('AUTHENTICATE: ' + response.status_code + ' - ' + response.reason_phrase);
+			global.log('AUTHENTICATE: ' + response.response_body.data);
+
+			let url = 'https://www.duolingo.com/switch_language';
+			let params = {'learning_language': new_language_code};
+			let msg = Soup.form_request_new_from_hash('POST', url, params);
+			// msg.request_headers.append('Authorization', '534bff4cc1a4757cd9dca2bfbadb844e57c87594113295907');
+			msg.request_headers.append('Connection', 'keep-alive');
+			global.log('is authenticated: ' + auth.is_authenticated);
+			// auth_tkt="534bff4cc1a4757cd9dca2bfbadb844e57c87594113295907!userid_type:int"
+			msg.request_headers.append('Authorization', auth.get_authorization(msg));
+
+			session.queue_message(msg, Lang.bind(this, function(session, response) {
+				global.log(response.status_code + ' - ' + response.reason_phrase);
+				global.log(response.response_headers.get_one('content-type'));
+			}));
+		}));
+
+
+
+
+		// session.connect('authenticate', Lang.bind(this, function() {
+		// 	global.log('authentication...');
+		// }));
+		// this.authenticate('newbie32', 'Obama32');
+
+		// this.authenticate(session, 'newbie32', 'Obama32', new_language_code);
+		//
+		// let url = 'https://www.duolingo.com/switch_language';
+		// // let request = Soup.Message.new('POST', url);
+		// let params = {'learning_language': new_language_code};
+		// let message = Soup.form_request_new_from_hash('POST', url, params);
+		//user id: 113295907
+		// message.request_headers.append("X-Authorization-key", '2b1e8b43e58b3687a6c507cf2bdd52dc57c2f539113295907');
+		// let auth = new Soup.AuthBasic();
+		// auth.authenticate('newbie32', 'Obama32');
+		// let authorization = auth.get_authorization(message);
+		// global.log('Authorization: ' + authorization);
+		// message.request_headers.append('Authorization', authorization);
+		// request.set_request('application/x-www-form-urlencoded', 2, params, params.length);
+
+		// let auth = new Soup.AuthBasic()
+		// auth.authenticate('newbie32', 'Obama32');
+		// request.request_headers.append('Authorization', auth.get_authorization(request));
+
+		// session.queue_message(message, Lang.bind(this, function(session, response) {
+		// 	global.log('SWITCH: ' + response.status_code + ' - ' + response.reason_phrase);
+		// 	// if (response.status_code == 200) {
+		// 	global.log('SWITCH: ' + response.response_headers.get_one('content-type'));
+		// 	// global.log(response.response_body.data);
+		// 	// 	// global.log(response.request_headers.get_content_type());
+		// 	// 	// global.log(response.response_headers.get_content_type()); //
+		// 	// }
+		// }));
+	},
+
+	authenticate: function(session, username, password, new_language_code) {
+		let url = 'https://www.duolingo.com/login';
+		let request = Soup.Message.new('POST', url);
+		let params = 'login=' + username + '&password=' + password;
+		request.set_request('application/x-www-form-urlencoded', 2, params, params.length);
+		let cookieJar = new Soup.CookieJar();
+		global.log(cookieJar);
+		session.addfeature(cookieJar);
+		global.log('session: ' + session);
+		session.queue_message(request, Lang.bind(this, function(session, response) {
+			global.log('AUTHENTICATE: ' + response.status_code + ' - ' + response.reason_phrase);
+			global.log('AUTHENTICATE: ' + response.response_body.data);
+
+			let url = 'https://www.duolingo.com/switch_language';
+			// let request = Soup.Message.new('POST', url);
+			let params = {'learning_language': new_language_code};
+			let message = Soup.form_request_new_from_hash('POST', url, params);
+			global.log('session: ' + session);
+			session.queue_message(message, Lang.bind(this, function(session, response) {
+				global.log('SWITCH: ' + response.status_code + ' - ' + response.reason_phrase);
+				// if (response.status_code == 200) {
+				global.log('SWITCH: ' + response.response_headers.get_one('content-type'));
+				// global.log(response.response_body.data);
+				// 	// global.log(response.request_headers.get_content_type());
+				// 	// global.log(response.response_headers.get_content_type()); //
+				// }
+			}));
+		}));
+	}
 });

@@ -236,14 +236,32 @@ const LanguageSubMenu = new Lang.Class({
 
 	_init: function(language, duolingo) {
 		this.parent(language[Constants.LANGUAGE_LABEL], true);
+        this.language_code = language[Constants.LANGUAGE_CODE];
 
 		/* display the flag */
 		let flag_name = FLAGS[language[Constants.LANGUAGE_LABEL]];
 		this.icon.gicon = Gio.icon_new_for_string(Constants.ICON_FLAG_PATH + flag_name);
 		this.icon.icon_size = icon_size;
 
+        // TODO: display star or change label color
+		if (language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
+			if (duolingo.get_count_learned_chapters() == duolingo.get_count_available_chapters()) {
+				// let completed_icon = new St.Icon({
+				// 	icon_name: 'starred-symbolic',
+				// 	style_class: 'system-actions-icon',
+				// 	icon_size: icon_size,
+				// 	y_align: Clutter.ActorAlign.CENTER
+				// });
+				// this.actor.insert_child_at_index(completed_icon,3);
+			}
+		}
+
 		/* Insert the current level of the language. 5 is the index of the last position in the sub menu */
-		this.actor.insert_child_at_index(new St.Label({ text: _('lvl. ') + language[Constants.LANGUAGE_LEVEL].toString(), y_align: Clutter.ActorAlign.CENTER }), 5);
+		this.actor.insert_child_at_index(new St.Label({
+            text: _('lvl. ') + language[Constants.LANGUAGE_LEVEL].toString(),
+            y_align: Clutter.ActorAlign.CENTER
+        }), 5);
+		// this.refresh_button = new St.Button({child: refresh_icon});
 
 		/* Add the menu displaying the global points of the language */
 		let menu_total_points = new PopupMenu.PopupBaseMenuItem();
@@ -258,10 +276,36 @@ const LanguageSubMenu = new Lang.Class({
 
         if (language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
             let completion = new PopupMenu.PopupBaseMenuItem();
-    		completion.actor.add(new St.Label({text: _('Completion'), x_expand: true}));
+    		completion.actor.add(new St.Label({
+				text: _('Completion'), 
+				x_expand: true
+			}));
             let label = duolingo.get_count_learned_chapters() + Constants.LABEL_XP_SEPARATOR + duolingo.get_count_available_chapters();
     		completion.actor.add(new St.Label({text: label}));
     		this.menu.addMenuItem(completion);
         }
+
+		// TODO: finish this SWITCH option - need to investigate on saving a session with Soup
+        // if (!language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
+        //     let menu_switch_to = new PopupMenu.PopupBaseMenuItem();
+    	// 	menu_switch_to.actor.add(new St.Label({
+        //         text: _('Switch to'),
+        //         x_expand: true,
+        //         x_align: Clutter.ActorAlign.CENTER}));
+		// 	// let switch_to_icon = new St.Icon({
+    	// 	// 	icon_name: 'go-top-symbolic',
+    	// 	// 	style_class: 'system-actions-icon',
+    	// 	// 	icon_size: icon_size,
+        //     //     y_align: Clutter.ActorAlign.CENTER
+    	// 	// });
+		// 	// let hbox = new St.BoxLayout();
+        // 	// hbox.add_child(switch_to_icon);
+    	// 	// menu_switch_to.actor.add(switch_to_icon);
+
+    	// 	this.menu.addMenuItem(menu_switch_to);
+        //     this.menu.connect('activate', Lang.bind(this, function() {
+        //         duolingo.post_switch_language(this.language_code);
+    	// 	}));
+        // }
 	},
 });
