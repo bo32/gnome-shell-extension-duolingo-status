@@ -17,7 +17,7 @@ In the Preferences menu, enter your Duolingo username.
 
 Thanks to Duolingo for the logo, that has been slightly altered for my use.  
 Thanks to Custom Icon Design for the flag icons: [link](http://www.customicondesign.com/).  
-Thanks to FatCow WebHosting for the ruby icon, that has been slightly altered, and the flame icon: [link](http://www.fatcow.com/free-icons/) [Creative Commons](http://creativecommons.org/licenses/by/3.0/us/).  
+Thanks to FatCow WebHosting for the ruby icon, that has been slightly altered, the medal icon and, the flame icon: [link](http://www.fatcow.com/free-icons/) [Creative Commons](http://creativecommons.org/licenses/by/3.0/us/).  
 Thanks to IconFinder for finding my icons.  
 
 ###CHANGELOG

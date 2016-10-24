@@ -30,13 +30,13 @@ function enable() {
     });
     menu.connect(Constants.EVENT_PREFERENCES, function () {
         let app = launch_extension_prefs(Me.uuid);
-        // TODO refresh the extension after closing the preferences
-        // app.connect('windows-changed', function() {
-        //     global.log(app.get_state());
-        //     if(app.get_state() == 0) {
-        //         // restart();
-        //     }
-        // })
+        app.connect('windows_changed', Lang.bind(menu, function() {
+            if (app.get_state() == Shell.AppState.STOPPED && menu.have_settings_been_changed() === true) {
+    			restart();
+    			Main.notify('The Duolingo extension just restarted.');
+    			// this._settings_changed = false;
+            }
+        }));
     });
 }
 

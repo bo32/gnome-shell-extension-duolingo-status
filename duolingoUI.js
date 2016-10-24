@@ -39,6 +39,12 @@ const DuolingoMenuButton = new Lang.Class({
         this.reminder = null;
 		this.duolingo = new Duolingo(Settings.get_string(Constants.SETTING_USERNAME));
 		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
+
+        this._settings_changed = false;
+        Settings.connect('changed', Lang.bind(this, function() {
+			if (this._settings_changed !== true)
+				this._settings_changed = true;
+		}));
 	},
 
 	_create_menus: function(error) {
@@ -224,6 +230,10 @@ const DuolingoMenuButton = new Lang.Class({
         this.emit(Constants.EVENT_READY);
     },
 
+    have_settings_been_changed: function() {
+        return this._settings_changed;
+    },
+
     destroy: function() {
         this._stop_reminder();
 		this.parent();
@@ -246,13 +256,10 @@ const LanguageSubMenu = new Lang.Class({
         // TODO: display star or change label color
 		if (language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
 			if (duolingo.get_count_learned_chapters() == duolingo.get_count_available_chapters()) {
-				// let completed_icon = new St.Icon({
-				// 	icon_name: 'starred-symbolic',
-				// 	style_class: 'system-actions-icon',
-				// 	icon_size: icon_size,
-				// 	y_align: Clutter.ActorAlign.CENTER
-				// });
-				// this.actor.insert_child_at_index(completed_icon,3);
+                let gicon = Gio.icon_new_for_string(Constants.ICON_MEDAL);
+        		let completed_icon = new St.Icon({gicon: gicon, icon_size: icon_size});
+				this.actor.insert_child_at_index(completed_icon, 3);
+                // this.actor.get_child_at_index(2).add_style_class_name(Constants.STYLE_LANGUAGE_COMPLETED);
 			}
 		}
 
@@ -260,7 +267,7 @@ const LanguageSubMenu = new Lang.Class({
 		this.actor.insert_child_at_index(new St.Label({
             text: _('lvl. ') + language[Constants.LANGUAGE_LEVEL].toString(),
             y_align: Clutter.ActorAlign.CENTER
-        }), 5);
+        }), 6);
 		// this.refresh_button = new St.Button({child: refresh_icon});
 
 		/* Add the menu displaying the global points of the language */
@@ -277,7 +284,7 @@ const LanguageSubMenu = new Lang.Class({
         if (language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
             let completion = new PopupMenu.PopupBaseMenuItem();
     		completion.actor.add(new St.Label({
-				text: _('Completion'), 
+				text: _('Completion'),
 				x_expand: true
 			}));
             let label = duolingo.get_count_learned_chapters() + Constants.LABEL_XP_SEPARATOR + duolingo.get_count_available_chapters();

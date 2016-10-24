@@ -220,7 +220,7 @@ DuolingoStatusSettingsWidget.prototype = {
 			halign: Gtk.Align.CENTER
 		});
 		color_picker_button_not_reached.set_use_alpha(false);
-		
+
 		rgba = new Gdk.RGBA();
 		rgba.parse(Settings.get_string(Constants.SETTING_ICON_COLOR_WHEN_DAILY_GOAL_NOT_REACHED));
 		color_picker_button_not_reached.set_rgba(rgba);
@@ -264,34 +264,34 @@ DuolingoStatusSettingsWidget.prototype = {
 			halign: Gtk.Align.FILL,
 			sensitive: !Settings.get_boolean(Constants.SETTING_USE_DEFAULT_BROWSER)
 		});
-		let app_chooser_button = new Gtk.AppChooserButton({
+		this.app_chooser_button = new Gtk.AppChooserButton({
 			content_type:"text/html",
 			sensitive: !Settings.get_boolean(Constants.SETTING_USE_DEFAULT_BROWSER)
 		});
-		app_chooser_button.set_show_dialog_item(true);
-		app_chooser_button.set_active(Settings.get_int(Constants.SETTING_APP_CHOOSER_ACTIVE_INDEX));
+		this.app_chooser_button.set_show_dialog_item(true);
+		this.app_chooser_button.set_active(Settings.get_int(Constants.SETTING_APP_CHOOSER_ACTIVE_INDEX));
 		this._grid.attach(custom_browser_label, 0, 1, 1, 1);
 		this._grid.attach(this._custom_browser_field, 1, 1, 2, 1);
-		this._grid.attach(app_chooser_button, 3, 1, 1, 1);
+		this._grid.attach(this.app_chooser_button, 3, 1, 1, 1);
 
 		/* if the default browser is set, we initialize the command line field with the command of the app selected in the app chooser button.	Otherwise, we give it the stored value */
 		if(!Settings.get_boolean(Constants.SETTING_USE_DEFAULT_BROWSER)) {
 			this._custom_browser_field.text = Settings.get_string(Constants.SETTING_OPENING_BROWSER_COMMAND);
 		} else {
-			this._custom_browser_field.text = this._clean_up_commandline(app_chooser_button.get_app_info().get_commandline());
+			this._custom_browser_field.text = this._clean_up_commandline(this.app_chooser_button.get_app_info().get_commandline());
 		}
 
 		this._default_browser_switch.connect('notify::active', Lang.bind(this, function() {
 			Settings.set_boolean(Constants.SETTING_USE_DEFAULT_BROWSER, this._default_browser_switch.active);
 			custom_browser_label.set_sensitive(!this._default_browser_switch.active);
 			this._custom_browser_field.set_sensitive(!this._default_browser_switch.active);
-			app_chooser_button.set_sensitive(!this._default_browser_switch.active);
+			this.app_chooser_button.set_sensitive(!this._default_browser_switch.active);
 		}));
 
-		app_chooser_button.connect('changed', function(app_chooser_button) {
-			this._custom_browser_field.text = DuolingoStatusSettingsWidget.prototype._clean_up_commandline(app_chooser_button.get_app_info().get_commandline());
-			Settings.set_int(Constants.SETTING_APP_CHOOSER_ACTIVE_INDEX, app_chooser_button.active);
-		});
+		this.app_chooser_button.connect('changed', Lang.bind(this, function() {
+			this._custom_browser_field.text = DuolingoStatusSettingsWidget.prototype._clean_up_commandline(this.app_chooser_button.get_app_info().get_commandline());
+			Settings.set_int(Constants.SETTING_APP_CHOOSER_ACTIVE_INDEX, this.app_chooser_button.active);
+		}));
 
 		stack.add_titled(this._grid, "browser", _("Browser"));
 
@@ -410,12 +410,21 @@ DuolingoStatusSettingsWidget.prototype = {
         scrollingWindow.show_all();
 		scrollingWindow.unparent();
 		scrollingWindow.connect('destroy', Lang.bind(this, function() {
-			Settings.set_string(Constants.SETTING_USERNAME, this.username_field.text);
+			if (this.username_field.text != Settings.get_string(Constants.SETTING_USERNAME)) {
+				Settings.set_string(Constants.SETTING_USERNAME, this.username_field.text);
+			}
 			if(!this._default_browser_switch.active && this._custom_browser_field.text != '') {
-				Settings.set_string(Constants.SETTING_OPENING_BROWSER_COMMAND, this._custom_browser_field.text);
+				if (Settings.get_string(Constants.SETTING_OPENING_BROWSER_COMMAND) != this._custom_browser_field.text) {
+					Settings.set_string(Constants.SETTING_OPENING_BROWSER_COMMAND, this._custom_browser_field.text);
+				}
 			} else {
-				Settings.set_string(Constants.SETTING_OPENING_BROWSER_COMMAND, 'xdg-open');
-				Settings.set_boolean(Constants.SETTING_USE_DEFAULT_BROWSER, true);
+				if (Settings.get_string(Constants.SETTING_OPENING_BROWSER_COMMAND) != 'xdg-open') {
+					Settings.set_string(Constants.SETTING_OPENING_BROWSER_COMMAND, 'xdg-open');
+				}
+				if (Settings.get_string(Constants.SETTING_USE_DEFAULT_BROWSER) !== this._default_browser_switch.active) {
+					Settings.set_boolean(Constants.SETTING_USE_DEFAULT_BROWSER, this._default_browser_switch.active);
+				}
+
 			}
 		}));
         return scrollingWindow;
