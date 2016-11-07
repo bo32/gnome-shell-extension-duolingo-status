@@ -293,26 +293,17 @@ const LanguageSubMenu = new Lang.Class({
         }
 
 		// TODO: finish this SWITCH option - need to investigate on saving a session with Soup
-        // if (!language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
-        //     let menu_switch_to = new PopupMenu.PopupBaseMenuItem();
-    	// 	menu_switch_to.actor.add(new St.Label({
-        //         text: _('Switch to'),
-        //         x_expand: true,
-        //         x_align: Clutter.ActorAlign.CENTER}));
-		// 	// let switch_to_icon = new St.Icon({
-    	// 	// 	icon_name: 'go-top-symbolic',
-    	// 	// 	style_class: 'system-actions-icon',
-    	// 	// 	icon_size: icon_size,
-        //     //     y_align: Clutter.ActorAlign.CENTER
-    	// 	// });
-		// 	// let hbox = new St.BoxLayout();
-        // 	// hbox.add_child(switch_to_icon);
-    	// 	// menu_switch_to.actor.add(switch_to_icon);
+        if (!language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
+            let menu_switch_to = new PopupMenu.PopupBaseMenuItem();
+    		menu_switch_to.actor.add(new St.Label({
+                text: _('Switch to'),
+                x_expand: true,
+                x_align: Clutter.ActorAlign.CENTER}));
 
-    	// 	this.menu.addMenuItem(menu_switch_to);
-        //     this.menu.connect('activate', Lang.bind(this, function() {
-        //         duolingo.post_switch_language(this.language_code);
-    	// 	}));
-        // }
+    		this.menu.addMenuItem(menu_switch_to);
+            this.menu.connect('activate', Lang.bind(this, function() {
+                duolingo.post_switch_language(this.language_code);
+    		}));
+        }
 	},
 });
