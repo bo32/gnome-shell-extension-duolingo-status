@@ -28,12 +28,16 @@ function enable() {
     menu.connect(Constants.EVENT_READY, function () {
         menu.get_refresh_button().connect('clicked', restart);
     });
+    menu.connect(Constants.EVENT_REFRESH, function () {
+        restart();
+        Main.notify(_('Duolingo extension restarted: language switched.'));
+    });
     menu.connect(Constants.EVENT_PREFERENCES, function () {
         let app = launch_extension_prefs(Me.uuid);
         app.connect('windows_changed', Lang.bind(menu, function() {
             if (app.get_state() == Shell.AppState.STOPPED && menu.have_settings_been_changed() === true) {
     			restart();
-    			Main.notify('The Duolingo extension just restarted.');
+                Main.notify(_('The Duolingo extension just restarted.'));
     			// this._settings_changed = false;
             }
         }));

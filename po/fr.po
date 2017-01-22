@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-12 22:26+0200\n"
+"POT-Creation-Date: 2017-01-22 16:26+0100\n"
 "PO-Revision-Date: 2016-08-11 21:11+0200\n"
 "Last-Translator: david <david.bonnal@gmail.com>\n"
 "Language-Team: French\n"
@@ -18,118 +18,133 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../duolingo.js:34
+#: extension.js:33
+msgid "Duolingo extension restarted: language switched."
+msgstr "L'extension Duolingo a redémarré: basculement de langue."
+
+#: extension.js:40
+msgid "The Duolingo extension just restarted."
+msgstr "L'extension Duolingo a redémarré."
+
+#: duolingo.js:34
 msgid "Please enter a username in the settings."
 msgstr "Veuillez entrer un nom d'utilisateur dans les paramètres."
 
-#: ../duolingo.js:55
+#: duolingo.js:55
 msgid "The user couldn't be found."
 msgstr "Le nom d'utilisateur n'a pas été trouvé."
 
-#: ../duolingo.js:60
+#: duolingo.js:60
 msgid "The server couldn't be reached."
 msgstr "Le serveur n'a pas pu être contacté."
 
-#: ../duolingoUI.js:246
+#: duolingoUI.js:271
 msgid "lvl. "
 msgstr "lvl. "
 
-#: ../duolingoUI.js:250
+#: duolingoUI.js:278
 msgid "Total"
 msgstr "Total"
 
-#: ../duolingoUI.js:255
+#: duolingoUI.js:283
 msgid "Next level in"
 msgstr "Prochain level dans"
 
-#: ../duolingoUI.js:261
+#: duolingoUI.js:290
 msgid "Completion"
 msgstr "Complétion"
 
-#: ../reminder.js:37
-msgid "Time to do Duolingo !"
-msgstr "Il est temps de faire Duolingo!"
+#: duolingoUI.js:301
+msgid "Switch to"
+msgstr ""
 
-#: ../prefs.js:52
+#: prefs.js:52
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
-#: ../prefs.js:64
+#: prefs.js:64
 msgid "Use 'www' in the url"
 msgstr "Utiliser 'www' dans l'url"
 
-#: ../prefs.js:78
+#: prefs.js:78
 msgid "Connection"
 msgstr "Connexion"
 
-#: ../prefs.js:93
+#: prefs.js:93
 msgid "Force display of lingots when double or nothing is already displayed"
-msgstr "Forcer l'affichage des lingots quand l'option Quitte ou Double est affichée"
+msgstr ""
+"Forcer l'affichage des lingots quand l'option Quitte ou Double est affichée"
 
-#: ../prefs.js:107
+#: prefs.js:107
 msgid "Content"
 msgstr "Contenu"
 
-#: ../prefs.js:121
+#: prefs.js:121
 msgid "Corner icon position"
 msgstr "Choix du coin de position"
 
-#: ../prefs.js:129 ../prefs.js:151
+#: prefs.js:129 prefs.js:151
 msgid "Left"
 msgstr "Gauche"
 
-#: ../prefs.js:130
+#: prefs.js:130
 msgid "Center"
 msgstr "Centre"
 
-#: ../prefs.js:131 ../prefs.js:153
+#: prefs.js:131 prefs.js:153
 msgid "Right"
 msgstr "Droite"
 
-#: ../prefs.js:143
+#: prefs.js:143
 msgid "Index icon position"
 msgstr "Rang de la position de l'icône"
 
-#: ../prefs.js:152
+#: prefs.js:152
 msgid "Middle"
 msgstr "Milieu"
 
-#: ../prefs.js:165
+#: prefs.js:165
 msgid "Hide icon when daily goal is reached"
 msgstr "Masquer l'icône lorsque l'objectif quotidien est atteint"
 
-#: ../prefs.js:182
+#: prefs.js:182
 msgid "Change icon color when daily goal is reached"
 msgstr "Couleur de l'icône lorsque l'objectif quotidien est atteint"
 
-#: ../prefs.js:213
+#: prefs.js:213
 msgid "Change icon color when daily goal is not reached"
 msgstr "Couleur de l'icône lorsque l'objectif quotidien n'est pas atteint"
 
-#: ../prefs.js:231
+#: prefs.js:232
 msgid "Icon"
 msgstr "Icône"
 
-#: ../prefs.js:245
+#: prefs.js:246
 msgid "Default browser"
 msgstr "Navigateur par défaut"
 
-#: ../prefs.js:257
+#: prefs.js:258
 msgid "Browser command"
 msgstr "Commande du navigateur"
 
-#: ../prefs.js:295
+#: prefs.js:296
 msgid "Browser"
 msgstr "Navigateur"
 
-#: ../prefs.js:311
+#: prefs.js:312
 msgid "Enable notification"
 msgstr "Activer les alertes"
 
-#: ../prefs.js:371
+#: prefs.js:372
 msgid "Reminder"
 msgstr "Alertes"
 
-#: ../prefs.js:395
-msgid "Restart gnome-shell (Alt + F2, then enter 'r') to apply the reminder changes."
-msgstr "Redémarrer gnome-shell (Alt + F2, puis 'r') pour appliquer les changements."
+#: prefs.js:396
+msgid ""
+"Restart gnome-shell (Alt + F2, then enter 'r') to apply the reminder changes."
+msgstr ""
+"Redémarrer gnome-shell (Alt + F2, puis 'r') pour appliquer les changements."
+
+#: reminder.js:37
+msgid "Time to do Duolingo !"
+msgstr "Il est temps de faire Duolingo!"

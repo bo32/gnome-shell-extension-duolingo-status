@@ -47,3 +47,4 @@ let URL_DUOLINGO_USERS = 'https://duolingo.com/users/';
 
 let EVENT_PREFERENCES = 'preferences';
 let EVENT_READY = 'ready';
+let EVENT_REFRESH = 'refresh';

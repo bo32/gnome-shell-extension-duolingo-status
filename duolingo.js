@@ -179,7 +179,25 @@ const Duolingo = new Lang.Class({
 		return this.get_raw_data().language_data[current_language].skills.length;
 	},
 
-	post_switch_language: function(new_language_code) {
-		// TODO
+	post_switch_language: function(new_language_code, callback) {
+		let session = new Soup.SessionAsync();
+		session.user_agent = Me.metadata.uuid;
+
+		let url = 'https://www.duolingo.com/login';
+		let params = {'login': 'newbie32', 'password': 'patatas32'};
+		let message = Soup.form_request_new_from_hash('POST', url, params);
+		message.request_headers.append('Connection', 'keep-alive');
+		session.queue_message(message, Lang.bind(this, function(session, response) {
+
+			let cookies = Soup.cookies_from_response(response);
+			let url_switch = 'https://www.duolingo.com/switch_language';
+			let params_switch = {'learning_language': new_language_code};
+			let msg = Soup.form_request_new_from_hash('POST', url_switch, params_switch);
+			Soup.cookies_to_request(cookies, msg);
+			session.queue_message(msg, Lang.bind(this, function(session, response) {
+				callback();
+			}));
+		}));
 	},
+
 });

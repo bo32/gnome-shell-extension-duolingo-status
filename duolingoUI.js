@@ -13,12 +13,12 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 const Duolingo = Me.imports.duolingo.Duolingo;
 const Reminder = Me.imports.reminder.Reminder;
-
-const Util = imports.misc.util;
 const FLAGS = Me.imports.flagsKeys.flags;
 const Utils = Me.imports.utils;
-const Settings = Convenience.getSettings();
 const Constants = Me.imports.constants;
+
+const Util = imports.misc.util;
+const Settings = Convenience.getSettings();
 
 const Gettext = imports.gettext;
 const _ = Gettext.gettext;
@@ -163,6 +163,9 @@ const DuolingoMenuButton = new Lang.Class({
 		for (let l in languages) {
 			let m = new LanguageSubMenu(languages[l], this.duolingo);
 			this.menu.addMenuItem(m);
+			m.connect(Constants.EVENT_REFRESH, Lang.bind(this, function () {
+        		this.emit(Constants.EVENT_REFRESH);
+			}));
 		}
 	},
 
@@ -290,6 +293,21 @@ const LanguageSubMenu = new Lang.Class({
             let label = duolingo.get_count_learned_chapters() + Constants.LABEL_XP_SEPARATOR + duolingo.get_count_available_chapters();
     		completion.actor.add(new St.Label({text: label}));
     		this.menu.addMenuItem(completion);
+        }
+
+        if (!language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
+            let menu_switch_to = new PopupMenu.PopupBaseMenuItem();
+    		menu_switch_to.actor.add(new St.Label({
+                text: _('Switch to'),
+                x_expand: true,
+                x_align: Clutter.ActorAlign.CENTER}));
+
+    		this.menu.addMenuItem(menu_switch_to);
+            this.menu.connect('activate', Lang.bind(this, function() {
+                duolingo.post_switch_language(this.language_code, Lang.bind(this, function() {
+					this.emit(Constants.EVENT_REFRESH);
+				}));
+    		}));
         }
 
 	},
