@@ -41,6 +41,7 @@ DuolingoStatusSettingsWidget.prototype = {
         /***************************************
 			Connection section
 		***************************************/
+		let row_index = 0;
 
 		this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
             row_spacing: 4,
@@ -57,20 +58,60 @@ DuolingoStatusSettingsWidget.prototype = {
 			halign: Gtk.Align.FILL
 		});
 		this.username_field.text = Settings.get_string(Constants.SETTING_USERNAME);
-		this._grid.attach(username_label, 0, 0, 1, 1);
-		this._grid.attach(this.username_field, 1, 0, 3, 1);
+		this._grid.attach(username_label, 0, row_index, 1, 1);
+		this._grid.attach(this.username_field, 1, row_index, 3, 1);
+		row_index++;
+
+		/* Use authentication */
+		let use_password_label = new Gtk.Label({
+			label: _('Use authentication'),
+			hexpand: true,
+			halign: Gtk.Align.START
+		});
+		this._grid.attach(use_password_label, 0, row_index, 3, 1);
+
+		this.use_password_switch = new Gtk.Switch({
+			halign: Gtk.Align.END,
+			active: Settings.get_boolean(Constants.SETTING_USE_AUTHENTICATION)
+		});
+		this.use_password_switch.connect('notify::active', Lang.bind(this, function() {
+			// Settings.set_boolean(Constants.SETTING_USE_AUTHENTICATION, use_password_switch.active);
+			this.password_field.set_sensitive(this.use_password_switch.active);
+			password_label.set_sensitive(this.use_password_switch.active);
+		}));
+		this._grid.attach(this.use_password_switch, 3, row_index, 1, 1);
+		row_index++;
+
+		/* Password field */
+		let password_label = new Gtk.Label({
+			label: _('Password'),
+			hexpand: true,
+			halign: Gtk.Align.START
+		});
+		this._grid.attach(password_label, 0, row_index, 1, 1);
+
+		this.password_field = new Gtk.Entry({
+			hexpand: true,
+			visibility: false,
+			halign: Gtk.Align.FILL
+		});
+		this.password_field.set_sensitive(Settings.get_boolean(Constants.SETTING_USE_AUTHENTICATION));
+		this.password_field.text = Settings.get_string(Constants.SETTING_PASSWORD);
+		this._grid.attach(this.password_field, 1, row_index, 3, 1);
+		row_index++;
 
 		let www_label = new Gtk.Label({
 			label: _('Use \'www\' in the url'),
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
-		this._grid.attach(www_label, 0, 4, 3, 1);
+		this._grid.attach(www_label, 0, row_index, 3, 1);
+
 		let www_switch = new Gtk.Switch({
 			halign: Gtk.Align.END,
 			active: Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)
 		});
-		this._grid.attach(www_switch, 3, 4, 1, 1);
+		this._grid.attach(www_switch, 3, row_index, 1, 1);
 		www_switch.connect('notify::active', function() {
 			Settings.set_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY, www_switch.active);
 		});
@@ -81,7 +122,7 @@ DuolingoStatusSettingsWidget.prototype = {
 		/***************************************
 			Content section
 		***************************************/
-
+		row_index = 0;
 		this._grid = new Gtk.Grid({
 			orientation: Gtk.Orientation.VERTICAL,
             row_spacing: 4,
@@ -101,15 +142,16 @@ DuolingoStatusSettingsWidget.prototype = {
 		display_lingots_switch.connect('notify::active', function() {
 			Settings.set_boolean(Constants.SETTING_SHOW_LINGOTS, display_lingots_switch.active);
 		});
-		this._grid.attach(display_lingots_label, 0, 0, 1, 1);
-		this._grid.attach(display_lingots_switch, 1, 0, 1, 1);
+		this._grid.attach(display_lingots_label, 0, row_index, 1, 1);
+		this._grid.attach(display_lingots_switch, 1, row_index, 1, 1);
+		row_index++;
 
 		stack.add_titled(this._grid, "content", _("Content"));
 
 		/***************************************
 			Icon section
 		***************************************/
-
+		row_index = 0;
 		this._grid = new Gtk.Grid({
 			orientation: Gtk.Orientation.VERTICAL,
             row_spacing: 4,
@@ -135,8 +177,9 @@ DuolingoStatusSettingsWidget.prototype = {
 			Settings.set_string(Constants.SETTING_ICON_POSITION, position_combo.get_active_id());
 		});
 
-		this._grid.attach(position_label, 0, 0, 3, 1);
-		this._grid.attach(position_combo, 3, 0, 1, 1);
+		this._grid.attach(position_label, 0, row_index, 3, 1);
+		this._grid.attach(position_combo, 3, row_index, 1, 1);
+		row_index++;
 
 		/* Index icon position combobox */
 		let index_label = new Gtk.Label({
@@ -157,8 +200,9 @@ DuolingoStatusSettingsWidget.prototype = {
 			Settings.set_string(Constants.SETTING_ICON_INDEX, index_combo.get_active_id());
 		});
 
-		this._grid.attach(index_label, 0, 1, 3, 1);
-		this._grid.attach(index_combo, 3, 1, 1, 1);
+		this._grid.attach(index_label, 0, row_index, 3, 1);
+		this._grid.attach(index_combo, 3, row_index, 1, 1);
+		row_index++;
 
 		/* Hide icon when daily goal is reached */
 		let hide_icon_label = new Gtk.Label({
@@ -166,7 +210,7 @@ DuolingoStatusSettingsWidget.prototype = {
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
-		this._grid.attach(hide_icon_label, 0, 2, 3, 1);
+		this._grid.attach(hide_icon_label, 0, row_index, 3, 1);
 
 		let hide_icon_switch = new Gtk.Switch({
 			active: Settings.get_boolean(Constants.SETTING_HIDE_WHEN_DAILY_GOAL_REACHED),
@@ -175,7 +219,8 @@ DuolingoStatusSettingsWidget.prototype = {
 		hide_icon_switch.connect('notify::active', function() {
 			Settings.set_boolean(Constants.SETTING_HIDE_WHEN_DAILY_GOAL_REACHED, hide_icon_switch.active);
 		});
-		this._grid.attach(hide_icon_switch, 3, 2, 1, 1);
+		this._grid.attach(hide_icon_switch, 3, row_index, 1, 1);
+		row_index++;
 
 		/* Change icon color when daily goal is reached */
 		let change_icon_color_label = new Gtk.Label({
@@ -183,7 +228,7 @@ DuolingoStatusSettingsWidget.prototype = {
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
-		this._grid.attach(change_icon_color_label, 0, 3, 2, 1);
+		this._grid.attach(change_icon_color_label, 0, row_index, 2, 1);
 
 		let enable_change_icon_color_label_switch = new Gtk.Switch({
 			active: Settings.get_boolean(Constants.SETTING_CHANGE_ICON_COLOR_WHEN_DAILY_GOAL_REACHED),
@@ -193,7 +238,7 @@ DuolingoStatusSettingsWidget.prototype = {
 			Settings.set_boolean(Constants.SETTING_CHANGE_ICON_COLOR_WHEN_DAILY_GOAL_REACHED, enable_change_icon_color_label_switch.active);
 			color_picker_button.set_sensitive(enable_change_icon_color_label_switch.active);
 		});
-		this._grid.attach(enable_change_icon_color_label_switch, 2, 3, 1, 1);
+		this._grid.attach(enable_change_icon_color_label_switch, 2, row_index, 1, 1);
 
 		let color_picker_button = new Gtk.ColorButton({
 			halign: Gtk.Align.CENTER
@@ -206,7 +251,8 @@ DuolingoStatusSettingsWidget.prototype = {
 			Settings.set_string(Constants.SETTING_ICON_COLOR_WHEN_DAILY_GOAL_REACHED, color_picker_button.rgba.to_string());
 		});
 		color_picker_button.set_sensitive(Settings.get_boolean(Constants.SETTING_CHANGE_ICON_COLOR_WHEN_DAILY_GOAL_REACHED));
-		this._grid.attach(color_picker_button, 3, 3, 1, 1);
+		this._grid.attach(color_picker_button, 3, row_index, 1, 1);
+		row_index++;
 
 		/* Change icon color when daily goal is not reached */
 		change_icon_color_label = new Gtk.Label({
@@ -214,7 +260,7 @@ DuolingoStatusSettingsWidget.prototype = {
 			hexpand: true,
 			halign: Gtk.Align.START
 		});
-		this._grid.attach(change_icon_color_label, 0, 4, 2, 1);
+		this._grid.attach(change_icon_color_label, 0, row_index, 2, 1);
 
 		let color_picker_button_not_reached = new Gtk.ColorButton({
 			halign: Gtk.Align.CENTER
@@ -227,13 +273,14 @@ DuolingoStatusSettingsWidget.prototype = {
 		color_picker_button_not_reached.connect('color-set', function() {
 			Settings.set_string(Constants.SETTING_ICON_COLOR_WHEN_DAILY_GOAL_NOT_REACHED, color_picker_button_not_reached.rgba.to_string());
 		});
-		this._grid.attach(color_picker_button_not_reached, 3, 4, 1, 1);
+		this._grid.attach(color_picker_button_not_reached, 3, row_index, 1, 1);
 
 		stack.add_titled(this._grid, "icon", _("Icon"));
 
 		/***************************************
 			Browser section
 		***************************************/
+		row_index = 0;
 
 		this._grid = new Gtk.Grid({
 			orientation: Gtk.Orientation.VERTICAL,
@@ -250,8 +297,9 @@ DuolingoStatusSettingsWidget.prototype = {
 			active: Settings.get_boolean(Constants.SETTING_USE_DEFAULT_BROWSER),
 			halign: Gtk.Align.END
 		});
-		this._grid.attach(default_browser_label, 0, 0, 1, 1);
-		this._grid.attach(this._default_browser_switch, 1, 0, 3, 1);
+		this._grid.attach(default_browser_label, 0, row_index, 1, 1);
+		this._grid.attach(this._default_browser_switch, 1, row_index, 3, 1);
+		row_index++;
 
         /* Custom browser */
 		let custom_browser_label = new Gtk.Label({
@@ -270,9 +318,9 @@ DuolingoStatusSettingsWidget.prototype = {
 		});
 		this.app_chooser_button.set_show_dialog_item(true);
 		this.app_chooser_button.set_active(Settings.get_int(Constants.SETTING_APP_CHOOSER_ACTIVE_INDEX));
-		this._grid.attach(custom_browser_label, 0, 1, 1, 1);
-		this._grid.attach(this._custom_browser_field, 1, 1, 2, 1);
-		this._grid.attach(this.app_chooser_button, 3, 1, 1, 1);
+		this._grid.attach(custom_browser_label, 0, row_index, 1, 1);
+		this._grid.attach(this._custom_browser_field, 1, row_index, 2, 1);
+		this._grid.attach(this.app_chooser_button, 3, row_index, 1, 1);
 
 		/* if the default browser is set, we initialize the command line field with the command of the app selected in the app chooser button.	Otherwise, we give it the stored value */
 		if(!Settings.get_boolean(Constants.SETTING_USE_DEFAULT_BROWSER)) {
@@ -299,6 +347,7 @@ DuolingoStatusSettingsWidget.prototype = {
 		/***************************************
 			Reminder section
 		***************************************/
+		row_index = 0;
 
 		this.is_reminder_info_displayed = false;
 
@@ -311,7 +360,7 @@ DuolingoStatusSettingsWidget.prototype = {
         let activate_alarm_label = new Gtk.Label({
         	label: _('Enable notification')
         });
-   		this._grid.attach(activate_alarm_label, 0, 0, 1, 1);
+   		this._grid.attach(activate_alarm_label, 0, row_index, 1, 1);
 
    		let activate_alarm_switch = new Gtk.Switch({
         	active: Settings.get_boolean(Constants.SETTING_IS_REMINDER)
@@ -322,7 +371,7 @@ DuolingoStatusSettingsWidget.prototype = {
 			this.notification_time_minute_field.set_sensitive(activate_alarm_switch.active);
 			this.inform_to_restart_gnome_shell(RESTART_REASON_REMINDER);
 		}));
-   		this._grid.attach(activate_alarm_switch, 1, 0, 1, 1);
+   		this._grid.attach(activate_alarm_switch, 1, row_index, 1, 1);
 
 		let adjustment_hours = new Gtk.Adjustment({
 			value: this.get_hour_of_notification_time(),
@@ -360,14 +409,15 @@ DuolingoStatusSettingsWidget.prototype = {
 			this.inform_to_restart_gnome_shell(RESTART_REASON_REMINDER);
 		}));
 
-		this._grid.attach(this.notification_time_hour_field, 2, 0, 1, 1);
-		this._grid.attach(new Gtk.Label({label: ':'}), 3, 0, 1, 1);
-		this._grid.attach(this.notification_time_minute_field, 4, 0, 1, 1);
+		this._grid.attach(this.notification_time_hour_field, 2, row_index, 1, 1);
+		this._grid.attach(new Gtk.Label({label: ':'}), 3, row_index, 1, 1);
+		this._grid.attach(this.notification_time_minute_field, 4, row_index, 1, 1);
+		row_index += 2;
 
 		this.info_reminder = new Gtk.Label({
 			label: ''
 		});
-		this._grid.attach(this.info_reminder, 0, 2, 5, 1);
+		this._grid.attach(this.info_reminder, 0, row_index, 5, 1);
 
 		stack.add_titled(this._grid, "reminder", _("Reminder"));
 
@@ -413,6 +463,18 @@ DuolingoStatusSettingsWidget.prototype = {
 			if (this.username_field.text != Settings.get_string(Constants.SETTING_USERNAME)) {
 				Settings.set_string(Constants.SETTING_USERNAME, this.username_field.text);
 			}
+
+			if (this.use_password_switch.active != Settings.get_boolean(Constants.SETTING_USE_AUTHENTICATION)) {
+				Settings.set_boolean(Constants.SETTING_USE_AUTHENTICATION, this.use_password_switch.active);
+			}
+			if (this.use_password_switch.active) {
+				if (this.password_field.text != Settings.get_string(Constants.SETTING_PASSWORD)) {
+					Settings.set_string(Constants.SETTING_PASSWORD, this.password_field.text);
+				}
+			} else {
+				Settings.set_string(Constants.SETTING_PASSWORD, '');
+			}
+
 			if(!this._default_browser_switch.active && this._custom_browser_field.text != '') {
 				if (Settings.get_string(Constants.SETTING_OPENING_BROWSER_COMMAND) != this._custom_browser_field.text) {
 					Settings.set_string(Constants.SETTING_OPENING_BROWSER_COMMAND, this._custom_browser_field.text);

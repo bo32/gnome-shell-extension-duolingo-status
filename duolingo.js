@@ -20,8 +20,9 @@ const _ = Gettext.gettext;
 const Duolingo = new Lang.Class({
 	Name: 'Duolingo',
 
-	_init: function(login) {
+	_init: function(login, password) {
 		this.login = login;
+		this.password = password;
 		this.raw_data = null;
 		this.timeouts = TIME_OUT_ATTEMPTS;
 	},
@@ -39,7 +40,7 @@ const Duolingo = new Lang.Class({
 			return this.raw_data;
 		}
 
-		let url = 'https://duolingo.com/users/' + this.login;
+		let url = Constants.URL_DUOLINGO_USERS + this.login;
 		if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
 			url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
 		}
@@ -179,18 +180,29 @@ const Duolingo = new Lang.Class({
 		return this.get_raw_data().language_data[current_language].skills.length;
 	},
 
-	post_switch_language: function(new_language_code, callback) {
+	post_switch_language: function(new_language_code, callback, err) {
 		let session = new Soup.SessionAsync();
 		session.user_agent = Me.metadata.uuid;
 
-		let url = 'https://www.duolingo.com/login';
-		let params = {'login': 'newbie32', 'password': 'patatas32'};
+		let url = Constants.URL_DUOLINGO_LOGIN;
+		if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
+			url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
+		}
+		let params = {'login': this.login, 'password': this.password};
 		let message = Soup.form_request_new_from_hash('POST', url, params);
 		message.request_headers.append('Connection', 'keep-alive');
 		session.queue_message(message, Lang.bind(this, function(session, response) {
+			let data = JSON.parse(response.response_body.data);
+			if (data['failure'] != null) {
+				err(data['message'] + '. Error: ' + data['failure']);
+				return;
+			}
 
 			let cookies = Soup.cookies_from_response(response);
-			let url_switch = 'https://www.duolingo.com/switch_language';
+			let url_switch = Constants.URL_DUOLINGO_SWITCH_LANGUAGE;
+			if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
+				url_switch = url_switch.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
+			}
 			let params_switch = {'learning_language': new_language_code};
 			let msg = Soup.form_request_new_from_hash('POST', url_switch, params_switch);
 			Soup.cookies_to_request(cookies, msg);

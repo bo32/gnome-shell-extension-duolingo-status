@@ -10,9 +10,11 @@ let SETTING_ICON_INDEX = 'icon-index';
 let SETTING_ICON_POSITION = 'icon-position';
 let SETTING_IS_REMINDER = 'is-reminder';
 let SETTING_NOTIFICATION_TIME = 'notification-time';
+let SETTING_PASSWORD = 'password';
 let SETTING_OPENING_BROWSER_COMMAND = 'opening-browser-command';
 let SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY = 'show-icon-in-notification-tray';
 let SETTING_SHOW_LINGOTS = 'show-lingots';
+let SETTING_USE_AUTHENTICATION = 'use-authentication';
 let SETTING_USE_DEFAULT_BROWSER = 'use-default-browser';
 let SETTING_USERNAME = 'username';
 
@@ -41,8 +43,10 @@ let STYLE_LINGOTS_LABEL = 'lingots_label';
 let STYLE_STREAK_FROZEN = 'streak-frozen';
 let STYLE_STREAK_NOT_FROZEN = 'streak-not-frozen';
 
-let URL_DUOLINGO_HOME = 'http://duolingo.com';
-let URL_DUOLINGO_STORE = 'http://duolingo.com/show_store';
+let URL_DUOLINGO_HOME = 'https://duolingo.com';
+let URL_DUOLINGO_LOGIN = 'https://duolingo.com/login';
+let URL_DUOLINGO_STORE = 'https://duolingo.com/show_store';
+let URL_DUOLINGO_SWITCH_LANGUAGE = 'https://duolingo.com/switch_language';
 let URL_DUOLINGO_USERS = 'https://duolingo.com/users/';
 
 let EVENT_PREFERENCES = 'preferences';

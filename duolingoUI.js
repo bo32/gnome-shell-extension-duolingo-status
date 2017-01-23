@@ -37,7 +37,9 @@ const DuolingoMenuButton = new Lang.Class({
 	    Gettext.bindtextdomain(Me.uuid, Me.dir.get_child('locale').get_path());
 
         this.reminder = null;
-		this.duolingo = new Duolingo(Settings.get_string(Constants.SETTING_USERNAME));
+		this.duolingo = new Duolingo(
+			Settings.get_string(Constants.SETTING_USERNAME),
+			Settings.get_string(Constants.SETTING_PASSWORD));
 		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
 
         this._settings_changed = false;
@@ -295,20 +297,30 @@ const LanguageSubMenu = new Lang.Class({
     		this.menu.addMenuItem(completion);
         }
 
-        if (!language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
-            let menu_switch_to = new PopupMenu.PopupBaseMenuItem();
-    		menu_switch_to.actor.add(new St.Label({
-                text: _('Switch to'),
-                x_expand: true,
-                x_align: Clutter.ActorAlign.CENTER}));
+		if (Settings.get_boolean(Constants.SETTING_USE_AUTHENTICATION)) {
+			if (!language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
+				let menu_switch_to = new PopupMenu.PopupBaseMenuItem();
+				menu_switch_to.actor.add(new St.Label({
+					text: _('Switch to'),
+					x_expand: true,
+					x_align: Clutter.ActorAlign.CENTER}));
 
-    		this.menu.addMenuItem(menu_switch_to);
-            this.menu.connect('activate', Lang.bind(this, function() {
-                duolingo.post_switch_language(this.language_code, Lang.bind(this, function() {
-					this.emit(Constants.EVENT_REFRESH);
+				this.menu.addMenuItem(menu_switch_to);
+				this.menu.connect('activate', Lang.bind(this, function() {
+					duolingo.post_switch_language(
+						this.language_code, 
+						Lang.bind(this, function() {
+							this.emit(Constants.EVENT_REFRESH);
+						}),
+						this.print_error);
 				}));
-    		}));
-        }
+			}
+		}
 
 	},
+
+	print_error: function(error_message) {
+		Main.notify(Constants.LABEL_NOTIFICATION_TITLE, error_message);
+	},
+
 });

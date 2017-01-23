@@ -7,11 +7,19 @@
         <default>''</default>
     </key>
 
+    <key type="s" name="password">
+        <default>''</default>
+    </key>
+
     <key type="b" name="hide-when-daily-goal-reached">
     	<default>false</default>
     </key>
 
     <key type="b" name="change-icon-color-when-daily-goal-reached">
+    	<default>false</default>
+    </key>
+
+    <key type="b" name="use-authentication">
     	<default>false</default>
     </key>
 
