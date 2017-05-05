@@ -199,6 +199,16 @@ const Duolingo = new Lang.Class({
 			}
 
 			let cookies = Soup.cookies_from_response(response);
+
+			global.log(cookies.length);
+			for (let c in cookies) {
+				global.log(cookies[c].name);
+				global.log(cookies[c].domain);
+				global.log(cookies[c].secure);
+				global.log(cookies[c].value);
+				global.log('----------------------');
+			}
+
 			let url_switch = Constants.URL_DUOLINGO_SWITCH_LANGUAGE;
 			if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
 				url_switch = url_switch.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
@@ -211,5 +221,59 @@ const Duolingo = new Lang.Class({
 			}));
 		}));
 	},
+
+	get_learning_from_language: function() {
+		return this.get_raw_data().learning_language_string;
+	},
+
+	authenticate: function() {
+		// TODO reuse this function
+	},
+
+	buy_item: function(item_name, callback, err) {
+		let session = new Soup.SessionAsync();
+		session.user_agent = Me.metadata.uuid;
+
+		let url = Constants.URL_DUOLINGO_LOGIN;
+		if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
+			url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
+		}
+		let params = {'login': this.login, 'password': this.password};
+		let message = Soup.form_request_new_from_hash('POST', url, params);
+		message.request_headers.append('Connection', 'keep-alive');
+		session.queue_message(message, Lang.bind(this, function(session, response) {
+			let data = JSON.parse(response.response_body.data);
+			if (data['failure'] != null) {
+				err(data['message'] + '. Error: ' + data['failure']);
+				return;
+			}
+
+			let cookies = Soup.cookies_from_response(response);
+			let url_buy_item = 'https://duolingo.com/store/purchase_item';
+			if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
+				url_buy_item = url_buy_item.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
+			}
+			let learning_from_language = this.get_learning_from_language();
+			global.log(learning_from_language);
+			let params_buy_item = {'item_name': item_name, 'learning_language': learning_from_language};
+			let msg = Soup.form_request_new_from_hash('POST', url_buy_item, params_buy_item);
+			// global.log(cookies.length);
+			// for (let c in cookies) {
+			// 	global.log(cookies[c].name);
+			// 	global.log(cookies[c].domain);
+			// 	global.log(cookies[c].value);
+			// 	global.log('----------------------');
+			// }
+			Soup.cookies_to_request(cookies, msg);
+			session.queue_message(msg, Lang.bind(this, function(session, response) {
+				global.log(response.status_code + ' - ' + response.reason_phrase);
+				// let data = JSON.parse(response.response_body.data);
+				global.log(response.response_body.data);
+				global.log(response.status_code + ' - ' + response.reason_phrase);
+				global.log(response.response_headers.get_one('content-type'));
+				callback();
+			}));
+		}));
+	}
 
 });

@@ -94,6 +94,8 @@ const DuolingoMenuButton = new Lang.Class({
     		/* display language menus */
     		this._add_language_menus();
 
+			// this._add_purchase_menu();
+
             // initiate reminder
             this._initiate_reminder();
         }
@@ -239,6 +241,67 @@ const DuolingoMenuButton = new Lang.Class({
         return this._settings_changed;
     },
 
+	_add_purchase_menu: function() {
+		if (Settings.get_boolean(Constants.SETTING_USE_AUTHENTICATION)) {
+
+			/* Duolingo menu */
+			// let purchase_menu = new PopupMenu.PopupBaseMenuItem();
+			// purchase_menu.actor.width = menu_width;
+
+			let buy_streak_button = new St.Button({
+            	style_class: 'system-menu-action',
+				x_fill: false,
+            	can_focus: true
+        	});
+
+			// Set the Icon of the Button
+			let gicon = Gio.icon_new_for_string(Constants.ICON_ICE_CUBE);
+        	let buy_streak_icon = new St.Icon({
+				gicon: gicon, 
+				icon_size: icon_size
+			});
+			buy_streak_button.set_child(buy_streak_icon);
+			// this.menu.box.add_child(buy_streak_button);
+
+			let buy_fire_button = new St.Button({
+            	style_class: 'system-menu-action',
+				x_fill: false,
+            	can_focus: true
+        	});
+			gicon = Gio.icon_new_for_string(Constants.ICON_FIRE);
+        	let buy_fire_icon = new St.Icon({
+				gicon: gicon, 
+				icon_size: icon_size
+			});
+			buy_fire_button.set_child(buy_fire_icon);
+
+			let buttons_box = new St.BoxLayout({
+				style_class: 'buttons-box'
+			});
+
+			buttons_box.add(buy_streak_button);
+			buttons_box.add(buy_fire_button);
+
+			this.menu.box.add_child(buttons_box);
+
+			buy_streak_button.connect('clicked', Lang.bind(this, function() {
+				global.log('here');
+				this.duolingo.buy_item(
+					'streak_freeze', 
+					// 'rupee_wager',
+					Lang.bind(this, function() {
+						this.emit(Constants.EVENT_REFRESH);
+					}),
+					this.print_error
+				);	
+			}));
+		}
+	},
+
+	print_error: function(error_message) {
+		Main.notify(Constants.LABEL_NOTIFICATION_TITLE, error_message);
+	},
+
     destroy: function() {
         this._stop_reminder();
 		this.parent();
@@ -259,14 +322,14 @@ const LanguageSubMenu = new Lang.Class({
 		this.icon.icon_size = icon_size;
 
         // TODO: display star or change label color
-		if (language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
-			if (duolingo.get_count_learned_chapters() == duolingo.get_count_available_chapters()) {
-                let gicon = Gio.icon_new_for_string(Constants.ICON_MEDAL);
-        		let completed_icon = new St.Icon({gicon: gicon, icon_size: icon_size});
-				this.actor.insert_child_at_index(completed_icon, 3);
-                // this.actor.get_child_at_index(2).add_style_class_name(Constants.STYLE_LANGUAGE_COMPLETED);
-			}
-		}
+		// if (language[Constants.LANGUAGE_CURRENT_LANGUAGE]) {
+		// 	if (duolingo.get_count_learned_chapters() == duolingo.get_count_available_chapters()) {
+        //         let gicon = Gio.icon_new_for_string(Constants.ICON_MEDAL);
+        // 		let completed_icon = new St.Icon({gicon: gicon, icon_size: icon_size});
+		// 		this.actor.insert_child_at_index(completed_icon, 3);
+        //         // this.actor.get_child_at_index(2).add_style_class_name(Constants.STYLE_LANGUAGE_COMPLETED);
+		// 	}
+		// }
 
 		/* Insert the current level of the language. 5 is the index of the last position in the sub menu */
 		this.actor.insert_child_at_index(new St.Label({

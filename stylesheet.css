@@ -28,3 +28,8 @@
 	font-weight: bold;
 	color: #78C800;
 }
+
+.buttons-box {
+    border-radius: 2px;
+    padding: .1em 1.5em;
+}

@@ -22,8 +22,8 @@ let ICON_DUOLINGO = Me.path + '/icons/duolingo-symbolic.svg';
 let ICON_DUOLINGO_ALERT = Me.path + '/icons/duolingo-alert-symbolic.svg';
 let ICON_FIRE = Me.path + '/icons/fire.png';
 let ICON_FLAG_PATH = Me.path + '/icons/flags/';
+let ICON_ICE_CUBE = Me.path + '/icons/ice_cube.png';
 let ICON_LINGOTS = Me.path + '/icons/ruby.png';
-let ICON_MEDAL = Me.path + '/icons/medal.png';
 
 let LABEL_DUOLINGO = 'duolingo';
 let LABEL_DUOLINGO_WITH_WWW_PREFIX = 'www.duolingo';

@@ -14,6 +14,7 @@ flags["Hungarian"] = "Hungary-flag.png";
 flags["Indonesian"] = "Indonesia-flag.png";
 flags["Irish"] = "Ireland-flag.png";
 flags["Italian"] = "Italy-flag.png";
+flags["Japanese"] = "Japan-flag.png";
 flags["Klingon"] = "Klingon-flag.png";
 flags["Korean"] = "Korea-flag.png";
 flags["Norwegian (Bokmål)"] = "Norway-flag.png";
