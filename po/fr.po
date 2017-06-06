@@ -52,7 +52,7 @@ msgstr "Prochain level dans"
 
 #: duolingoUI.js:290
 msgid "Completion"
-msgstr "Complétion"
+msgstr "Achèvement"
 
 #: duolingoUI.js:301
 msgid "Switch to"
