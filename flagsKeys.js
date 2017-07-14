@@ -28,4 +28,5 @@ flags["Swedish"] = "Sweden-flag.png";
 flags["Turkish"] = "Turkey-flag.png";
 flags["Ukrainian"] = "Ukraine-flag.png";
 flags["Vietnamese"] = "Vietnam-flag.png";
+flags["High Valyrian"] = "Valyria-flag.png";
 flags["Welsh"] = "Wales-flag.png";

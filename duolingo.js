@@ -199,16 +199,6 @@ const Duolingo = new Lang.Class({
 			}
 
 			let cookies = Soup.cookies_from_response(response);
-
-			global.log(cookies.length);
-			for (let c in cookies) {
-				global.log(cookies[c].name);
-				global.log(cookies[c].domain);
-				global.log(cookies[c].secure);
-				global.log(cookies[c].value);
-				global.log('----------------------');
-			}
-
 			let url_switch = Constants.URL_DUOLINGO_SWITCH_LANGUAGE;
 			if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
 				url_switch = url_switch.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
