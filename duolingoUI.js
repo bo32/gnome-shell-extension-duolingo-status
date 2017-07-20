@@ -21,7 +21,7 @@ const Util = imports.misc.util;
 const Settings = Convenience.getSettings();
 
 const Gettext = imports.gettext;
-const _ = Gettext.gettext;
+const _ = Gettext.domain(Me.uuid).gettext;
 
 let icon_size = 16;
 let menu_width = 250;
@@ -33,7 +33,6 @@ const DuolingoMenuButton = new Lang.Class({
 	_init: function() {
         this.parent(0.0, 'duolingo');
 
-        Gettext.textdomain(Me.uuid);
 	    Gettext.bindtextdomain(Me.uuid, Me.dir.get_child('locale').get_path());
 
         this.reminder = null;

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-22 16:26+0100\n"
+"POT-Creation-Date: 2017-07-19 18:29+0200\n"
 "PO-Revision-Date: 2016-08-12 22:17+0200\n"
 "Last-Translator: david <david.bonnal@gmail.com>\n"
 "Language-Team: English\n"
@@ -25,123 +25,129 @@ msgstr "Duolingo extension restarted: language switched."
 msgid "The Duolingo extension just restarted."
 msgstr "The Duolingo extension just restarted."
 
-#: duolingo.js:34
+#: duolingo.js:35
 msgid "Please enter a username in the settings."
 msgstr "Please enter a username in the settings."
 
-#: duolingo.js:55
+#: duolingo.js:56
 msgid "The user couldn't be found."
 msgstr "The user couldn't be found."
 
-#: duolingo.js:60
+#: duolingo.js:61
 msgid "The server couldn't be reached."
 msgstr "The server couldn't be reached."
 
-#: duolingoUI.js:271
+#: duolingoUI.js:336
 msgid "lvl. "
 msgstr "lvl. "
 
-#: duolingoUI.js:278
+#: duolingoUI.js:343
 msgid "Total"
 msgstr "Total"
 
-#: duolingoUI.js:283
+#: duolingoUI.js:348
 msgid "Next level in"
 msgstr "Next level in"
 
-#: duolingoUI.js:290
+#: duolingoUI.js:355
 msgid "Completion"
 msgstr "Completion"
 
-#: duolingoUI.js:301
+#: duolingoUI.js:367
 msgid "Switch to"
-msgstr ""
+msgstr "Switch to"
 
-#: prefs.js:52
+#: prefs.js:53
 msgid "Username"
 msgstr "Username"
 
-#: prefs.js:64
+#: prefs.js:67
+msgid "Use authentication"
+msgstr "Use authentication"
+
+#: prefs.js:87
+msgid "Password"
+msgstr "Password"
+
+#: prefs.js:104
 msgid "Use 'www' in the url"
 msgstr "Use 'www' in the url"
 
-#: prefs.js:78
+#: prefs.js:119
 msgid "Connection"
 msgstr "Connection"
 
-#: prefs.js:93
+#: prefs.js:134
 msgid "Force display of lingots when double or nothing is already displayed"
 msgstr "Force display of lingots when double or nothing is already displayed"
 
-#: prefs.js:107
+#: prefs.js:149
 msgid "Content"
 msgstr "Content"
 
-#: prefs.js:121
+#: prefs.js:163
 msgid "Corner icon position"
 msgstr "Corner icon position"
 
-#: prefs.js:129 prefs.js:151
+#: prefs.js:171 prefs.js:194
 msgid "Left"
 msgstr "Left"
 
-#: prefs.js:130
+#: prefs.js:172
 msgid "Center"
 msgstr "Center"
 
-#: prefs.js:131 prefs.js:153
+#: prefs.js:173 prefs.js:196
 msgid "Right"
 msgstr "Right"
 
-#: prefs.js:143
+#: prefs.js:186
 msgid "Index icon position"
 msgstr "Index icon position"
 
-#: prefs.js:152
+#: prefs.js:195
 msgid "Middle"
 msgstr "Middle"
 
-#: prefs.js:165
+#: prefs.js:209
 msgid "Hide icon when daily goal is reached"
 msgstr "Hide icon when daily goal is reached"
 
-#: prefs.js:182
+#: prefs.js:227
 msgid "Change icon color when daily goal is reached"
 msgstr "Change icon color when daily goal is reached"
 
-#: prefs.js:213
+#: prefs.js:259
 msgid "Change icon color when daily goal is not reached"
 msgstr "Change icon color when daily goal is not reached"
 
-#: prefs.js:232
+#: prefs.js:278
 msgid "Icon"
 msgstr "Icon"
 
-#: prefs.js:246
+#: prefs.js:293
 msgid "Default browser"
 msgstr "Default browser"
 
-#: prefs.js:258
+#: prefs.js:306
 msgid "Browser command"
 msgstr "Browser command"
 
-#: prefs.js:296
+#: prefs.js:344
 msgid "Browser"
 msgstr "Browser"
 
-#: prefs.js:312
+#: prefs.js:361
 msgid "Enable notification"
 msgstr "Enable notification"
 
-#: prefs.js:372
+#: prefs.js:422
 msgid "Reminder"
 msgstr "Reminder"
 
-#: prefs.js:396
-msgid ""
-"Restart gnome-shell (Alt + F2, then enter 'r') to apply the reminder changes."
-msgstr ""
-"Restart gnome-shell (Alt + F2, then enter 'r') to apply the reminder changes."
+#: prefs.js:446
+msgid "Restart gnome-shell (Alt + F2, then enter 'r') to apply the reminder changes."
+msgstr "Restart gnome-shell (Alt + F2, then enter 'r') to apply the reminder changes."
 
 #: reminder.js:37
 msgid "Time to do Duolingo !"
