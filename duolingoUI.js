@@ -182,6 +182,7 @@ const DuolingoMenuButton = new Lang.Class({
 			let m = new LanguageSubMenu(languages[l], this.duolingo);
 			this.menu.addMenuItem(m);
 			m.connect(Constants.EVENT_REFRESH, Lang.bind(this, function () {
+				// TODO maybe add the spinner when switching language
 				this.emit(Constants.EVENT_REFRESH);
 				Main.notify(_('Duolingo extension restarted: language switched.'));
 			}));
