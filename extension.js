@@ -25,12 +25,8 @@ function init() {
 let menu;
 function enable() {
     menu = new DuolingoUI.DuolingoMenuButton();
-    menu.connect(Constants.EVENT_READY, function () {
-        menu.get_refresh_button().connect('clicked', restart);
-    });
     menu.connect(Constants.EVENT_REFRESH, function () {
         restart();
-        Main.notify(_('Duolingo extension restarted: language switched.'));
     });
     menu.connect(Constants.EVENT_PREFERENCES, function () {
         let app = launch_extension_prefs(Me.uuid);
