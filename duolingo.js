@@ -45,7 +45,7 @@ const Duolingo = new Lang.Class({
 			url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
 		}
 		let request = Soup.Message.new('GET', url);
-		let session = new Soup.SessionSync();
+		let session = new Soup.SessionAsync();
 		session.queue_message(request, Lang.bind(this, function(session, response) {
 			if (response.status_code == 200) {
 				try {

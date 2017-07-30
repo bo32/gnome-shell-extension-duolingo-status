@@ -8,6 +8,8 @@ const Lang = imports.lang;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Gio = imports.gi.Gio;
 const Clutter = imports.gi.Clutter;
+const Animation = imports.ui.animation;
+const Tweener = imports.ui.tweener;
 const Me = ExtensionUtils.getCurrentExtension();
 
 const Convenience = Me.imports.convenience;
@@ -31,7 +33,28 @@ const DuolingoMenuButton = new Lang.Class({
     Extends: PanelMenu.Button,
 
 	_init: function() {
-        this.parent(0.0, 'duolingo');
+		this.parent(0.0, 'duolingo');
+		// let spinnerIcon = Gio.File.new_for_uri('resource:///org/gnome/shell/theme/process-working.svg');
+		// let spinnerIcon = Gio.File.new_for_uri('resource:///.local/share/gnome-shell/extensions/duolingostatus@david.bonnal.gmail.com/icons/classic-process-working.svg');
+		// // let spinnerIcon = Gio.icon_new_for_string(Me.path + '/icons/classic-process-working.svg');
+		// this.spinner = new Animation.AnimatedIcon(spinnerIcon, 16);
+		// this.spinner.actor.opacity = 255;
+		// this.spinner.play();
+		// this.actor.add_child(this.spinner.actor);
+		// let spinnerIcon = Gio.File.new_for_uri('resource:///home/davide/.local/share/gnome-shell/extensions/duolingostatus@david.bonnal.gmail.com/icons/classic-process-working.svg');
+
+        this.actor.add_style_class_name('panel-status-button');
+		let spinnerIcon = Gio.File.new_for_uri('resource:///org/gnome/shell/theme/process-working.svg');
+		this.spinner = new Animation.AnimatedIcon(spinnerIcon, 16);
+		// this.spinner.actor.opacity = 0;
+		this.spinner.actor.show();
+		this.actor.add_child(this.spinner.actor);
+
+		// let hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
+        // hbox.add_child(spinnericon);
+		// this.actor.add_child(this.hbox);
+		this._set_spinner(true);
+
 
 	    Gettext.bindtextdomain(Me.uuid, Me.dir.get_child('locale').get_path());
 
@@ -46,6 +69,7 @@ const DuolingoMenuButton = new Lang.Class({
 			if (this._settings_changed !== true)
 				this._settings_changed = true;
 		}));
+		this._finalize_menu_icon();
 	},
 
 	_create_menus: function(error) {
@@ -98,10 +122,16 @@ const DuolingoMenuButton = new Lang.Class({
             // initiate reminder
             this._initiate_reminder();
         }
-        this._finalize_menu_icon();
+		// this._finalize_menu_icon();
+		this._finalize_init();
 	},
 
 	_init_icon: function(path) {
+		// remove spinner
+		this._set_spinner(false);
+		this.actor.remove_child(this.spinner.actor);
+
+
 		this.hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
 		let gicon = Gio.icon_new_for_string(path);
 		let icon = new St.Icon({gicon: gicon, icon_size: icon_size});
@@ -233,8 +263,36 @@ const DuolingoMenuButton = new Lang.Class({
         let index = parseInt(Settings.get_string(Constants.SETTING_ICON_INDEX));
         let position = Settings.get_string(Constants.SETTING_ICON_POSITION);
         Main.panel.addToStatusArea('duolingo', this, index, position);
+	},
+
+	_finalize_init: function() {
         this.emit(Constants.EVENT_READY);
-    },
+	},
+	
+	_set_spinner: function(enable) {
+		Tweener.removeTweens(this.spinner.actor);
+
+		if(enable) {
+			this.spinner.play();
+			Tweener.addTween(this.spinner.actor, {
+				opacity: 255,
+				// delay: 1.0,
+				// time: 0.3,
+				transition: 'linear'
+			});
+		} else {
+			Tweener.addTween(this.spinner.actor, { 
+				opacity: 0,
+                // time: 0.3,
+                transition: 'linear',
+                onCompleteScope: this,
+                onComplete: function() {
+					if (this.spinner)
+						this.spinner.stop();
+				}
+			});
+		}
+	},
 
     have_settings_been_changed: function() {
         return this._settings_changed;
