@@ -263,14 +263,11 @@ const DuolingoMenuButton = new Lang.Class({
 			this.spinner.play();
 			Tweener.addTween(this.spinner.actor, {
 				opacity: 255,
-				// delay: 1.0,
-				// time: 0.3,
 				transition: 'linear'
 			});
 		} else {
 			Tweener.addTween(this.spinner.actor, { 
 				opacity: 0,
-                // time: 0.3,
                 transition: 'linear',
                 onCompleteScope: this,
                 onComplete: function() {
