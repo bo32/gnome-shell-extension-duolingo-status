@@ -155,7 +155,10 @@ const Duolingo = new Lang.Class({
 
 	get_double_or_nothing_status: function() {
 		if (this.get_raw_data().inventory != null)
-			return this.get_raw_data().inventory.rupee_wager;
+			if (this.get_raw_data().inventory.hasOwnProperty('rupee_wager'))
+				return this.get_raw_data().inventory.rupee_wager;
+			else 
+				return undefined;
 		return null;
 	},
 
