@@ -10,7 +10,7 @@ const Mainloop = imports.mainloop;
 const Lang = imports.lang;
 const Main = imports.ui.main;
 
-const Reminder = new Lang.Class({
+var Reminder = new Lang.Class({
 	Name: 'Reminder',
 
 	_init: function(duolingo) {

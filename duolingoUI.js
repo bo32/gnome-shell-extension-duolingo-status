@@ -28,7 +28,7 @@ const _ = Gettext.domain(Me.uuid).gettext;
 let icon_size = 16;
 let menu_width = 250;
 
-const DuolingoMenuButton = new Lang.Class({
+var DuolingoMenuButton = new Lang.Class({
     Name: 'Duolingo.DuolingoMenuButton',
     Extends: PanelMenu.Button,
 
