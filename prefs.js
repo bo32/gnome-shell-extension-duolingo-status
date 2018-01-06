@@ -450,7 +450,7 @@ DuolingoStatusSettingsWidget.prototype = {
 		}
 	},
 
-	_compvarePrefsWidget: function() {
+	_completePrefsWidget: function() {
         var scrollingWindow = new Gtk.ScrolledWindow({
                                  'hscrollbar-policy': Gtk.PolicyType.AUTOMATIC,
                                  'vscrollbar-policy': Gtk.PolicyType.AUTOMATIC,
