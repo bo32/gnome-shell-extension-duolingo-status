@@ -1,5 +1,6 @@
 var flags = new Array();
 flags["Catalan"] = "Catalan-flag.png";
+flags["Chinese"] = "China-flag.png";
 flags["Czech"] = "Czech-republic-flag.png";
 flags["Danish"] = "Denmark.png";
 flags["Dutch"] = "Netherlands-flag.png";
