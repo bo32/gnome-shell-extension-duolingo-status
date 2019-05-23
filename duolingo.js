@@ -81,8 +81,7 @@ var Duolingo = new Lang.Class({
 			session.queue_message(message, Lang.bind(this, function(session, response) {
 				let data = JSON.parse(response.response_body.data);
 				if (data['failure'] != null) {
-					global.log(data['message'] + '. Error: ' + data['failure']);
-					callback(_("Authentication failed."));
+					callback(_(data['message'] + '. Error: ' + data['failure']));
 					return;
 				}
 
