@@ -10,6 +10,9 @@ const Mainloop = imports.mainloop;
 const Lang = imports.lang;
 const Main = imports.ui.main;
 
+const Gettext = imports.gettext;
+const _ = Gettext.domain(Me.uuid).gettext;
+
 var Reminder = new Lang.Class({
 	Name: 'Reminder',
 

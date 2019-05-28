@@ -16,6 +16,9 @@ const Utils = Me.imports.utils;
 
 const Settings = Convenience.getSettings();
 
+const Gettext = imports.gettext;
+const _ = Gettext.domain(Me.uuid).gettext;
+
 var LanguageSubMenu = new Lang.Class({
     Name: 'Duolingo.LanguageMenu',
     Extends: PopupMenu.PopupSubMenuMenuItem,

@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-19 18:29+0200\n"
+"POT-Creation-Date: 2019-05-27 23:57-0400\n"
 "PO-Revision-Date: 2016-08-11 21:11+0200\n"
-"Last-Translator: david <david.bonnal@gmail.com>\n"
+"Last-Translator: stslxg <stslxg@gmail.com>\n"
 "Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -18,11 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: extension.js:33
-msgid "Duolingo extension restarted: language switched."
-msgstr "L'extension Duolingo a redémarré: basculement de langue."
-
-#: extension.js:40
+#: extension.js:36
 msgid "The Duolingo extension just restarted."
 msgstr "L'extension Duolingo a redémarré."
 
@@ -42,25 +38,9 @@ msgstr "Le serveur n'a pas pu être contacté."
 msgid "Authentication failed."
 msgstr "Authentification échouée."
 
-#: duolingoUI.js:336
-msgid "lvl. "
-msgstr "lvl. "
-
-#: duolingoUI.js:343
-msgid "Total"
-msgstr "Total"
-
-#: duolingoUI.js:348
-msgid "Next level in"
-msgstr "Prochain level dans"
-
-#: duolingoUI.js:355
-msgid "Completion"
-msgstr "Achèvement"
-
-#: duolingoUI.js:367
-msgid "Switch to"
-msgstr "Changer"
+#: duolingoUI.js:187
+msgid "Duolingo extension restarted: language switched."
+msgstr "L'extension Duolingo a redémarré: basculement de langue."
 
 #: prefs.js:53
 msgid "Username"
@@ -157,3 +137,23 @@ msgstr "Redémarrer gnome-shell (Alt + F2, puis 'r') pour appliquer les changeme
 #: reminder.js:37
 msgid "Time to do Duolingo !"
 msgstr "Il est temps de faire Duolingo!"
+
+#: duolingoLanguageMenu.js:34
+msgid "lvl. "
+msgstr "lvl. "
+
+#: duolingoLanguageMenu.js:40
+msgid "Total"
+msgstr "Total"
+
+#: duolingoLanguageMenu.js:45
+msgid "Next level in"
+msgstr "Prochain level dans"
+
+#: duolingoLanguageMenu.js:52
+msgid "Completion"
+msgstr "Achèvement"
+
+#: duolingoLanguageMenu.js:64
+msgid "Switch to"
+msgstr "Changer"

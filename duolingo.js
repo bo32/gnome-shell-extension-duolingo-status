@@ -15,7 +15,7 @@ const TIME_OUT_ATTEMPTS = 3;
 const TIME_OUT_DURATION = 3500;
 
 const Gettext = imports.gettext;
-const _ = Gettext.gettext;
+const _ = Gettext.domain(Me.uuid).gettext;
 
 var Duolingo = new Lang.Class({
 	Name: 'Duolingo',

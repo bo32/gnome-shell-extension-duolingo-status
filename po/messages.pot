@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-20 18:30+0200\n"
+"POT-Creation-Date: 2019-05-27 23:57-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:33
-msgid "Duolingo extension restarted: language switched."
-msgstr ""
-
-#: extension.js:40
+#: extension.js:36
 msgid "The Duolingo extension just restarted."
 msgstr ""
 
@@ -41,24 +37,8 @@ msgstr ""
 msgid "Authentication failed."
 msgstr ""
 
-#: duolingoUI.js:336
-msgid "lvl. "
-msgstr ""
-
-#: duolingoUI.js:343
-msgid "Total"
-msgstr ""
-
-#: duolingoUI.js:348
-msgid "Next level in"
-msgstr ""
-
-#: duolingoUI.js:355
-msgid "Completion"
-msgstr ""
-
-#: duolingoUI.js:367
-msgid "Switch to"
+#: duolingoUI.js:187
+msgid "Duolingo extension restarted: language switched."
 msgstr ""
 
 #: prefs.js:53
@@ -150,10 +130,29 @@ msgid "Reminder"
 msgstr ""
 
 #: prefs.js:446
-msgid ""
-"Restart gnome-shell (Alt + F2, then enter 'r') to apply the reminder changes."
+msgid "Restart gnome-shell (Alt + F2, then enter 'r') to apply the reminder changes."
 msgstr ""
 
 #: reminder.js:37
 msgid "Time to do Duolingo !"
+msgstr ""
+
+#: duolingoLanguageMenu.js:34
+msgid "lvl. "
+msgstr ""
+
+#: duolingoLanguageMenu.js:40
+msgid "Total"
+msgstr ""
+
+#: duolingoLanguageMenu.js:45
+msgid "Next level in"
+msgstr ""
+
+#: duolingoLanguageMenu.js:52
+msgid "Completion"
+msgstr ""
+
+#: duolingoLanguageMenu.js:64
+msgid "Switch to"
 msgstr ""
