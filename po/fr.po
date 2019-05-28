@@ -30,13 +30,17 @@ msgstr "L'extension Duolingo a redémarré."
 msgid "Please enter a username in the settings."
 msgstr "Veuillez entrer un nom d'utilisateur dans les paramètres."
 
-#: duolingo.js:56
+#: duolingo.js:57 duolingo.js:103
 msgid "The user couldn't be found."
 msgstr "Le nom d'utilisateur n'a pas été trouvé."
 
-#: duolingo.js:61
+#: duolingo.js:62 duolingo.js:108
 msgid "The server couldn't be reached."
 msgstr "Le serveur n'a pas pu être contacté."
+
+#: duolingo.js:85
+msgid "Authentication failed."
+msgstr "Authentification échouée."
 
 #: duolingoUI.js:336
 msgid "lvl. "

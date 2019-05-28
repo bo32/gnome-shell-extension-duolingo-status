@@ -29,12 +29,16 @@ msgstr ""
 msgid "Please enter a username in the settings."
 msgstr ""
 
-#: duolingo.js:56
+#: duolingo.js:57 duolingo.js:103
 msgid "The user couldn't be found."
 msgstr ""
 
-#: duolingo.js:61
+#: duolingo.js:62 duolingo.js:108
 msgid "The server couldn't be reached."
+msgstr ""
+
+#: duolingo.js:85
+msgid "Authentication failed."
 msgstr ""
 
 #: duolingoUI.js:336
