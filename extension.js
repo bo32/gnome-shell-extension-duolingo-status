@@ -7,6 +7,9 @@ const Lang = imports.lang;
 const DuolingoUI = Me.imports.duolingoUI;
 const Constants = Me.imports.constants;
 
+const Gettext = imports.gettext;
+const _ = Gettext.domain(Me.uuid).gettext;
+
 function launch_extension_prefs(uuid) {
     let appSys = Shell.AppSystem.get_default();
     let app = appSys.lookup_app('gnome-shell-extension-prefs.desktop');

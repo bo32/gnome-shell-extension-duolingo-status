@@ -15,7 +15,7 @@ const TIME_OUT_ATTEMPTS = 3;
 const TIME_OUT_DURATION = 3500;
 
 const Gettext = imports.gettext;
-const _ = Gettext.gettext;
+const _ = Gettext.domain(Me.uuid).gettext;
 
 var Duolingo = new Lang.Class({
 	Name: 'Duolingo',
@@ -40,32 +40,82 @@ var Duolingo = new Lang.Class({
 			return this.raw_data;
 		}
 
-		let url = Constants.URL_DUOLINGO_USERS + this.login;
-		if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
-			url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
-		}
-		let request = Soup.Message.new('GET', url);
-		let session = new Soup.SessionAsync();
-		session.queue_message(request, Lang.bind(this, function(session, response) {
-			if (response.status_code == 200) {
-				try {
-					this.raw_data = JSON.parse(response.response_body.data);
-					callback();
-				} catch (err) {
-					global.log(err);
-					callback(_("The user couldn't be found."));
-				}
-			} else {
-				this.timeouts--;
-				if (this.timeouts == 0) {
-					callback(_("The server couldn't be reached."));
-				} else {
-					Mainloop.timeout_add(TIME_OUT_DURATION, Lang.bind(this, function() {
-						this.get_raw_data(callback);
-					}));
-				}
+		if (!this.password) {
+			let url = Constants.URL_DUOLINGO_USERS + this.login;
+			if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
+				url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
 			}
-		}));
+			let request = Soup.Message.new('GET', url);
+			let session = new Soup.SessionAsync();
+			session.queue_message(request, Lang.bind(this, function(session, response) {
+				if (response.status_code == 200) {
+					try {
+						this.raw_data = JSON.parse(response.response_body.data);
+						callback();
+					} catch (err) {
+						global.log(err);
+						callback(_("The user couldn't be found."));
+					}
+				} else {
+					this.timeouts--;
+					if (this.timeouts == 0) {
+						callback(_("The server couldn't be reached."));
+					} else {
+						Mainloop.timeout_add(TIME_OUT_DURATION, Lang.bind(this, function() {
+							this.get_raw_data(callback);
+						}));
+					}
+				}
+			}));
+		} else {
+			let session = new Soup.SessionAsync();
+			session.user_agent = Me.metadata.uuid;
+
+			let url = Constants.URL_DUOLINGO_LOGIN;
+			if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
+				url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
+			}
+			let params = {'login': this.login, 'password': this.password};
+			let message = Soup.form_request_new_from_hash('POST', url, params);
+			message.request_headers.append('Connection', 'keep-alive');
+			session.queue_message(message, Lang.bind(this, function(session, response) {
+				let data = JSON.parse(response.response_body.data);
+				if (data['failure'] != null) {
+					global.log(data['message'] + '. Error: ' + data['failure']);
+					callback(_("Authentication failed."));
+					return;
+				}
+
+				let cookies = Soup.cookies_from_response(response);
+				let url = Constants.URL_DUOLINGO_USERS + this.login;
+				if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
+					url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
+				}
+				let msg = Soup.Message.new('GET', url);
+				Soup.cookies_to_request(cookies, msg);
+				session.queue_message(msg, Lang.bind(this, function(session, response) {
+					if (response.status_code == 200) {
+						try {
+							this.raw_data = JSON.parse(response.response_body.data);
+							callback();
+						} catch (err) {
+							global.log(err);
+							callback(_("The user couldn't be found."));
+						}
+					} else {
+						this.timeouts--;
+						if (this.timeouts == 0) {
+							callback(_("The server couldn't be reached."));
+						} else {
+							Mainloop.timeout_add(TIME_OUT_DURATION, Lang.bind(this, function() {
+								this.get_raw_data(callback);
+							}));
+						}
+					}
+				}));
+			}));
+		}
+
 		return this.raw_data;
 	},
 
