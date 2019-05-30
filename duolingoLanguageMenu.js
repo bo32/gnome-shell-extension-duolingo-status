@@ -10,22 +10,20 @@ const PopupMenu = imports.ui.popupMenu;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Constants = Me.imports.constants;
+const CustomSignals = Me.imports.custom_signals.CustomSignals;
 const Convenience = Me.imports.convenience;
 const FLAGS = Me.imports.flagsKeys.flags;
 const Utils = Me.imports.utils;
 
 const Settings = Convenience.getSettings();
 
-const Gettext = imports.gettext;
-const _ = Gettext.domain(Me.uuid).gettext;
+var LanguageSubMenu = class LanguageMenu extends PopupMenu.PopupSubMenuMenuItem {
 
-var LanguageSubMenu = new Lang.Class({
-    Name: 'Duolingo.LanguageMenu',
-    Extends: PopupMenu.PopupSubMenuMenuItem,
-
-	_init: function(language, duolingo) {
-		this.parent(language[Constants.LANGUAGE_LABEL], true);
-        this.language_code = language[Constants.LANGUAGE_CODE];
+	constructor(language, duolingo) {
+		super(language[Constants.LANGUAGE_LABEL], true);
+		this.language_code = language[Constants.LANGUAGE_CODE];
+		
+		this.custom_signals = new CustomSignals();
 
 		/* display the flag */
 		let flag_name = FLAGS[language[Constants.LANGUAGE_LABEL]];
@@ -73,17 +71,17 @@ var LanguageSubMenu = new Lang.Class({
 					duolingo.post_switch_language(
 						this.language_code, 
 						Lang.bind(this, function() {
-							this.emit(Constants.EVENT_REFRESH);
+							this.custom_signals.emit(Constants.EVENT_REFRESH);
 							// Main.notify(_('Duolingo extension restarted: language switched.'));
 						}),
 						this.print_error);
 				}));
 			}
 		}
-	},
+	}
 
-	print_error: function(error_message) {
+	print_error(error_message) {
 		Main.notify(Constants.LABEL_NOTIFICATION_TITLE, error_message);
-    },
+    }
 
-});
+};

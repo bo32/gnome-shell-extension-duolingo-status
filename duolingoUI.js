@@ -13,6 +13,7 @@ const Tweener = imports.ui.tweener;
 const Me = ExtensionUtils.getCurrentExtension();
 
 const Convenience = Me.imports.convenience;
+const CustomSignals = Me.imports.custom_signals.CustomSignals;
 const Duolingo = Me.imports.duolingo.Duolingo;
 const Reminder = Me.imports.reminder.Reminder;
 const Utils = Me.imports.utils;
@@ -21,33 +22,34 @@ const LanguageSubMenu = Me.imports.duolingoLanguageMenu.LanguageSubMenu;
 
 const Util = imports.misc.util;
 const Settings = Convenience.getSettings();
-
+const GObject = imports.gi.GObject;
 const Gettext = imports.gettext;
 const _ = Gettext.domain(Me.uuid).gettext;
 
 let icon_size = 16;
 let menu_width = 250;
 
-var DuolingoMenuButton = new Lang.Class({
-    Name: 'Duolingo.DuolingoMenuButton',
-    Extends: PanelMenu.Button,
+var DuolingoMenuButton = GObject.registerClass(class DuolingoMenuButton extends PanelMenu.Button {
 
-	_init: function() {
-		this.parent(0.0, 'duolingo');
+	_init() {
+		super._init(0.0, 'duolingo');
 	    Gettext.bindtextdomain(Me.uuid, Me.dir.get_child('locale').get_path());
 
+		this.custom_signals = new CustomSignals();
         this.actor.add_style_class_name('panel-status-button');
 		let spinnerIcon = Gio.File.new_for_uri('resource:///org/gnome/shell/theme/process-working.svg');
 		this.spinner = new Animation.AnimatedIcon(spinnerIcon, 16);
 		this.spinner.actor.show();
 		this.actor.add_child(this.spinner.actor);
 		this._set_spinner(true);
+		global.log('here');
 
         this.reminder = null;
 		this.duolingo = new Duolingo(
 			Settings.get_string(Constants.SETTING_USERNAME),
 			Settings.get_string(Constants.SETTING_PASSWORD));
 		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
+		global.log('here');
 
         this._settings_changed = false;
         Settings.connect('changed', Lang.bind(this, function() {
@@ -55,19 +57,22 @@ var DuolingoMenuButton = new Lang.Class({
 				this._settings_changed = true;
 		}));
 		this._finalize_menu_icon();
-	},
+	}
 
-	_create_menus: function(error) {
+	_create_menus(error) {
+		global.log('create menus');
 		if (Settings.get_boolean(Constants.SETTING_HIDE_WHEN_DAILY_GOAL_REACHED) && this.duolingo.is_daily_goal_reached()) {
 			this.destroy();
 			return;
 		}
 
 		if(error) {
+			global.log('error');
 			Main.notify(Constants.LABEL_NOTIFICATION_TITLE, error);
 			this._init_icon(Constants.ICON_DUOLINGO_ALERT);
 			this._init_duolingo_menu();
 		} else {
+			global.log('not error');
     		this._init_icon(Constants.ICON_DUOLINGO);
     		this._init_duolingo_menu();
 
@@ -110,9 +115,9 @@ var DuolingoMenuButton = new Lang.Class({
         }
 		// this._finalize_menu_icon();
 		this._finalize_init();
-	},
+	}
 
-	_init_icon: function(path) {
+	_init_icon(path) {
 		// remove spinner
 		this._set_spinner(false);
 		this.actor.remove_child(this.spinner.actor);
@@ -123,9 +128,9 @@ var DuolingoMenuButton = new Lang.Class({
         this.hbox.add_child(icon);
         this.actor.add_style_class_name('panel-status-button');
 		this.actor.add_child(this.hbox);
-	},
+	}
 
-	_init_duolingo_menu: function() {
+	_init_duolingo_menu() {
 		/* Duolingo menu */
 		let link_menu = new PopupMenu.PopupBaseMenuItem();
 		link_menu.actor.width = menu_width;
@@ -144,7 +149,7 @@ var DuolingoMenuButton = new Lang.Class({
 		});
 		this.refresh_button = new St.Button({child: refresh_icon});
 		this.refresh_button.connect('clicked', Lang.bind(this, function() {
-			this.emit(Constants.EVENT_REFRESH);
+			this.custom_signals.emit(Constants.EVENT_REFRESH);
 		}));
 
 		link_menu.actor.add(this.refresh_button, {expand: false});
@@ -157,39 +162,39 @@ var DuolingoMenuButton = new Lang.Class({
 		});
 		let preferences_button = new St.Button({child: preferences_icon});
 		preferences_button.connect('clicked', Lang.bind(this, function() {
-            this.emit(Constants.EVENT_PREFERENCES);
+            this.custom_signals.emit(Constants.EVENT_PREFERENCES);
 		}));
 		link_menu.actor.add(preferences_button, {expand: false});
 
 		this.menu.addMenuItem(link_menu);
-	},
+	}
 
-    _initiate_reminder: function() {
+    _initiate_reminder() {
         this.reminder = new Reminder(this.duolingo);
         if (!this.duolingo.is_daily_goal_reached()) {
             this.reminder.start();
         }
-    },
+    }
 
-    _stop_reminder: function() {
+    _stop_reminder() {
         if (this.reminder != null)
             this.reminder.stop();
-    },
+    }
 
-	_add_language_menus: function() {
+	_add_language_menus() {
         let languages = this.duolingo.get_languages();
 		for (let l in languages) {
 			let m = new LanguageSubMenu(languages[l], this.duolingo);
 			this.menu.addMenuItem(m);
 			m.connect(Constants.EVENT_REFRESH, Lang.bind(this, function () {
 				// TODO maybe add the spinner when switching language
-				this.emit(Constants.EVENT_REFRESH);
+				this.custom_signals.emit(Constants.EVENT_REFRESH);
 				Main.notify(_('Duolingo extension restarted: language switched.'));
 			}));
 		}
-	},
+	}
 
-	_display_lingots: function() {
+	_display_lingots() {
         if(this.duolingo.get_double_or_nothing_status() == null || Settings.get_boolean(Constants.SETTING_SHOW_LINGOTS)) {
             let lingots = this.duolingo.get_lingots();
         	let gicon = Gio.icon_new_for_string(Constants.ICON_LINGOTS);
@@ -205,9 +210,9 @@ var DuolingoMenuButton = new Lang.Class({
             this.profile_menu.actor.add(lingots_icon);
         	this.profile_menu.actor.add(lingots_label);
         }
-	},
+	}
 
-    _display_double_or_nothing: function() {
+    _display_double_or_nothing() {
         let double_or_nothing = this.duolingo.get_double_or_nothing_status();
         if (double_or_nothing != null) {
             let gicon = Gio.icon_new_for_string(Constants.ICON_FIRE);
@@ -223,13 +228,13 @@ var DuolingoMenuButton = new Lang.Class({
     		this.profile_menu.actor.add(fire_icon);
     		this.profile_menu.actor.add(double_or_nothing_label);
         }
-	},
+	}
 
-	_open_lingots_link: function() {
+	_open_lingots_link() {
         Util.spawn([Settings.get_string(Constants.SETTING_OPENING_BROWSER_COMMAND), Constants.URL_DUOLINGO_STORE]);
-	},
+	}
 
-	_set_todays_improvement: function() {
+	_set_todays_improvement() {
 		let improvement = this.duolingo.get_improvement();
 		let daily_goal = this.duolingo.get_daily_goal();
 		this.todays_improvement.text = improvement + Constants.LABEL_XP_SEPARATOR + daily_goal + ' XP';
@@ -241,22 +246,22 @@ var DuolingoMenuButton = new Lang.Class({
 				this.hbox.get_child_at_index(0).style = 'color: ' + Settings.get_string(Constants.SETTING_ICON_COLOR_WHEN_DAILY_GOAL_REACHED) +';'
 			}
 		}
-	},
+	}
 
-    _finalize_menu_icon: function() {
+    _finalize_menu_icon() {
         // for the top right corner, use Main.panel.addToStatusArea() with an index as a 3rd parameter.
         // let index = 0; // 0, 1: normal in the queue, 2: just at the left of the main menu, -1: completely in the top right corner
         // let position = 'right';
         let index = parseInt(Settings.get_string(Constants.SETTING_ICON_INDEX));
         let position = Settings.get_string(Constants.SETTING_ICON_POSITION);
         Main.panel.addToStatusArea('duolingo', this, index, position);
-	},
+	}
 
-	_finalize_init: function() {
-        this.emit(Constants.EVENT_READY);
-	},
+	_finalize_init() {
+        this.custom_signals.emit(Constants.EVENT_READY);
+	}
 	
-	_set_spinner: function(enable) {
+	_set_spinner(enable) {
 		Tweener.removeTweens(this.spinner.actor);
 
 		if(enable) {
@@ -276,13 +281,13 @@ var DuolingoMenuButton = new Lang.Class({
 				}
 			});
 		}
-	},
+	}
 
-    have_settings_been_changed: function() {
+    have_settings_been_changed() {
         return this._settings_changed;
-    },
+    }
 
-	_add_purchase_menu: function() {
+	_add_purchase_menu() {
 		if (Settings.get_boolean(Constants.SETTING_USE_AUTHENTICATION)) {
 
 			/* Duolingo menu */
@@ -331,22 +336,22 @@ var DuolingoMenuButton = new Lang.Class({
 					'streak_freeze', 
 					// 'rupee_wager',
 					Lang.bind(this, function() {
-						this.emit(Constants.EVENT_REFRESH);
+						this.custom_signals.emit(Constants.EVENT_REFRESH);
 					}),
 					this.print_error
 				);	
 			}));
 		}
-	},
+	}
 
-	print_error: function(error_message) {
+	print_error(error_message) {
 		Main.notify(Constants.LABEL_NOTIFICATION_TITLE, error_message);
-	},
+	}
 
-    destroy: function() {
+    destroy() {
         this._stop_reminder();
-		this.parent();
-	},
+		super.destroy();
+	}
 	
 });
 

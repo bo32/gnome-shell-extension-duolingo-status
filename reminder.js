@@ -9,18 +9,16 @@ const DateTime = imports.gi.GLib.DateTime;
 const Mainloop = imports.mainloop;
 const Lang = imports.lang;
 const Main = imports.ui.main;
-
 const Gettext = imports.gettext;
 const _ = Gettext.domain(Me.uuid).gettext;
 
-var Reminder = new Lang.Class({
-	Name: 'Reminder',
+var Reminder = class Reminder {
 
-	_init: function(duolingo) {
+	constructor(duolingo) {
         this.duolingo = duolingo;
-	},
+	}
 
-    start: function() {
+    start() {
         if (Settings.get_boolean(Constants.SETTING_IS_REMINDER)) {
 
             let tz = TimeZone.new_local();
@@ -42,12 +40,12 @@ var Reminder = new Lang.Class({
                 this.timer_id = null;
             }));
         }
-    },
+    }
 
-    stop: function() {
+    stop() {
 		if(this.timer_id != null) {
         	Mainloop.source_remove(this.timer_id);
 			this.timer_id = null;
 		}
     }
-});
+};

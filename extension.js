@@ -28,10 +28,10 @@ function init() {
 let menu;
 function enable() {
     menu = new DuolingoUI.DuolingoMenuButton();
-    menu.connect(Constants.EVENT_REFRESH, function () {
+    menu.custom_signals.connect(Constants.EVENT_REFRESH, function () {
         restart();
     });
-    menu.connect(Constants.EVENT_PREFERENCES, function () {
+    menu.custom_signals.connect(Constants.EVENT_PREFERENCES, function () {
         let app = launch_extension_prefs(Me.uuid);
         app.connect('windows_changed', Lang.bind(menu, function() {
             if (app.get_state() == Shell.AppState.STOPPED && menu.have_settings_been_changed() === true) {
