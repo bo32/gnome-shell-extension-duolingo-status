@@ -42,15 +42,13 @@ var DuolingoMenuButton = GObject.registerClass(class DuolingoMenuButton extends 
 		this.spinner.actor.show();
 		this.actor.add_child(this.spinner.actor);
 		this._set_spinner(true);
-		global.log('here');
 
         this.reminder = null;
 		this.duolingo = new Duolingo(
 			Settings.get_string(Constants.SETTING_USERNAME),
 			Settings.get_string(Constants.SETTING_PASSWORD));
 		this.duolingo.get_raw_data(Lang.bind(this, this._create_menus));
-		global.log('here');
-
+		
         this._settings_changed = false;
         Settings.connect('changed', Lang.bind(this, function() {
 			if (this._settings_changed !== true)
@@ -60,19 +58,16 @@ var DuolingoMenuButton = GObject.registerClass(class DuolingoMenuButton extends 
 	}
 
 	_create_menus(error) {
-		global.log('create menus');
 		if (Settings.get_boolean(Constants.SETTING_HIDE_WHEN_DAILY_GOAL_REACHED) && this.duolingo.is_daily_goal_reached()) {
 			this.destroy();
 			return;
 		}
 
 		if(error) {
-			global.log('error');
 			Main.notify(Constants.LABEL_NOTIFICATION_TITLE, error);
 			this._init_icon(Constants.ICON_DUOLINGO_ALERT);
 			this._init_duolingo_menu();
 		} else {
-			global.log('not error');
     		this._init_icon(Constants.ICON_DUOLINGO);
     		this._init_duolingo_menu();
 
@@ -186,7 +181,7 @@ var DuolingoMenuButton = GObject.registerClass(class DuolingoMenuButton extends 
 		for (let l in languages) {
 			let m = new LanguageSubMenu(languages[l], this.duolingo);
 			this.menu.addMenuItem(m);
-			m.connect(Constants.EVENT_REFRESH, Lang.bind(this, function () {
+			m.custom_signals.connect(Constants.EVENT_REFRESH, Lang.bind(this, function () {
 				// TODO maybe add the spinner when switching language
 				this.custom_signals.emit(Constants.EVENT_REFRESH);
 				Main.notify(_('Duolingo extension restarted: language switched.'));
@@ -331,7 +326,6 @@ var DuolingoMenuButton = GObject.registerClass(class DuolingoMenuButton extends 
 			this.menu.box.add_child(buttons_box);
 
 			buy_streak_button.connect('clicked', Lang.bind(this, function() {
-				global.log('here');
 				this.duolingo.buy_item(
 					'streak_freeze', 
 					// 'rupee_wager',

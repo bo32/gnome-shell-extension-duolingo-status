@@ -30,7 +30,6 @@ var Duolingo = class Duolingo {
 	If the user is not found, displays a notification, and the menu is not built.
 	If an error different than 200 is returned, displays a notification, and the menu is not built. */
 	get_raw_data(callback) {
-		global.log('get raw data');
 		if (!this.login) {
 			callback(_("Please enter a username in the settings."));
 			return null;
@@ -300,20 +299,11 @@ var Duolingo = class Duolingo {
 				url_buy_item = url_buy_item.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
 			}
 			var learning_from_language = this.get_learning_from_language();
-			global.log(learning_from_language);
 			var params_buy_item = {'item_name': item_name, 'learning_language': learning_from_language};
 			var msg = Soup.form_request_new_from_hash('POST', url_buy_item, params_buy_item);
-			// global.log(cookies.length);
-			// for (var c in cookies) {
-			// 	global.log(cookies[c].name);
-			// 	global.log(cookies[c].domain);
-			// 	global.log(cookies[c].value);
-			// 	global.log('----------------------');
-			// }
 			Soup.cookies_to_request(cookies, msg);
 			session.queue_message(msg, Lang.bind(this, function(session, response) {
 				global.log(response.status_code + ' - ' + response.reason_phrase);
-				// var data = JSON.parse(response.response_body.data);
 				global.log(response.response_body.data);
 				global.log(response.status_code + ' - ' + response.reason_phrase);
 				global.log(response.response_headers.get_one('content-type'));

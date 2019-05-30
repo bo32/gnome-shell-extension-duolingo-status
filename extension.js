@@ -30,7 +30,7 @@ function enable() {
     menu = new DuolingoUI.DuolingoMenuButton();
     menu.custom_signals.connect(Constants.EVENT_REFRESH, function () {
         restart();
-    });
+    });    
     menu.custom_signals.connect(Constants.EVENT_PREFERENCES, function () {
         let app = launch_extension_prefs(Me.uuid);
         app.connect('windows_changed', Lang.bind(menu, function() {
