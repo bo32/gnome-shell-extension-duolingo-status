@@ -51,5 +51,4 @@ var URL_DUOLINGO_SWITCH_LANGUAGE = 'https://duolingo.com/switch_language';
 var URL_DUOLINGO_USERS = 'https://duolingo.com/users/';
 
 var EVENT_PREFERENCES = 'preferences';
-var EVENT_READY = 'ready';
 var EVENT_REFRESH = 'refresh';

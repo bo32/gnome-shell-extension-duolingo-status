@@ -2,7 +2,6 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Shell = imports.gi.Shell;
 const Main = imports.ui.main;
-const Lang = imports.lang;
 
 const DuolingoUI = Me.imports.duolingoUI;
 const Constants = Me.imports.constants;
@@ -25,21 +24,20 @@ function launch_extension_prefs(uuid) {
 function init() {
 }
 
-let menu;
+var menu;
 function enable() {
     menu = new DuolingoUI.DuolingoMenuButton();
-    menu.connect(Constants.EVENT_REFRESH, function () {
+    menu.custom_signals.connect(Constants.EVENT_REFRESH, function() {
         restart();
     });
-    menu.connect(Constants.EVENT_PREFERENCES, function () {
+    menu.custom_signals.connect(Constants.EVENT_PREFERENCES, function () {
         let app = launch_extension_prefs(Me.uuid);
-        app.connect('windows_changed', Lang.bind(menu, function() {
+        app.connect('windows_changed', function() {
             if (app.get_state() == Shell.AppState.STOPPED && menu.have_settings_been_changed() === true) {
-    			restart();
+                menu.custom_signals.emit(Constants.EVENT_REFRESH);
                 Main.notify(_('The Duolingo extension just restarted.'));
-    			// this._settings_changed = false;
             }
-        }));
+        });
     });
 }
 
