@@ -11,7 +11,8 @@ Useful information about your Duolingo account, and a shortcut to the website ar
 
 ### REQUIREMENTS
 
-In the Preferences menu, enter your Duolingo username.
+In the Preferences menu, enter your Duolingo username.  
+The Duolingo API is now exclusively accessible via authentication. You must then enter your password in the Preferences (Google/Facebook authentications not supported).  
 
 ### CREDITS
 

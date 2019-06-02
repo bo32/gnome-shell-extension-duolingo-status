@@ -68,30 +68,34 @@ var Duolingo = class Duolingo {
 			}));
 			
 		} else {
-			let session = new Soup.SessionAsync();
+			var session = new Soup.SessionAsync();
 			session.user_agent = Me.metadata.uuid;
 
-			let url = Constants.URL_DUOLINGO_LOGIN;
+			var url = Constants.URL_DUOLINGO_LOGIN;
 			if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
 				url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
 			}
-			let params = {'login': this.login, 'password': this.password};
-			let message = Soup.form_request_new_from_hash('POST', url, params);
+			var params = {'login': this.login, 'password': this.password};
+			var message = Soup.form_request_new_from_hash('POST', url, params);
 			message.request_headers.append('Connection', 'keep-alive');
 			session.queue_message(message, Lang.bind(this, function(session, response) {
-				let data = JSON.parse(response.response_body.data);
+				var data = JSON.parse(response.response_body.data);
+				if (!data) {
+					callback(_("Cannot connect to Duolingo servers - check your connection."));
+					return;
+				}
 				if (data['failure'] != null) {
 					global.log(data['message'] + '. Error: ' + data['failure']);
 					callback(_("Authentication failed."));
 					return;
 				}
 
-				let cookies = Soup.cookies_from_response(response);
-				let url = Constants.URL_DUOLINGO_USERS + this.login;
+				var cookies = Soup.cookies_from_response(response);
+				var url = Constants.URL_DUOLINGO_USERS + this.login;
 				if (Settings.get_boolean(Constants.SETTING_SHOW_ICON_IN_NOTIFICATION_TRAY)) {
 					url = url.replace(Constants.LABEL_DUOLINGO, Constants.LABEL_DUOLINGO_WITH_WWW_PREFIX);
 				}
-				let msg = Soup.Message.new('GET', url);
+				var msg = Soup.Message.new('GET', url);
 				Soup.cookies_to_request(cookies, msg);
 				session.queue_message(msg, Lang.bind(this, function(session, response) {
 					if (response.status_code == 200) {
